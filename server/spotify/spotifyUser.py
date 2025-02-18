@@ -1,8 +1,8 @@
 
-from flask import Flask, jsonify, request, Blueprint
+import datetime
+from flask import Flask, jsonify, redirect, url_for, request, Blueprint, session
 from dotenv import load_dotenv
 import requests
-from server.utils import get_access_token
 import json
 
 user_blueprint = Blueprint("user", __name__)
@@ -17,8 +17,16 @@ SPOTIFY_URL_USER_SEARCH = "https://api.spotify.com/v1"
 @user_blueprint.route('/topTracks', methods=['GET'])
 def get_top_tracks():
     try:
-        access_token = get_access_token()
-        headers = {"Authorization": f"Bearer {access_token}"}
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
         response = requests.get(SPOTIFY_TOP_TRACKS_ENDPOINT, headers=headers)
 
         if response.status_code == 200:
@@ -32,8 +40,15 @@ def get_top_tracks():
 @user_blueprint.route('/nowPlaying', methods=['GET'])
 def get_now_playing():
     try:
-        access_token = get_access_token()
-        headers = {"Authorization": f"Bearer {access_token}"}
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
         response = requests.get(SPOTIFY_NOW_PLAYING_ENDPOINT, headers=headers)
 
         if response.status_code == 200:
@@ -47,8 +62,16 @@ def get_now_playing():
 @user_blueprint.route('/info', methods=['GET'])
 def get_user_info():
     try:
-        access_token = get_access_token()
-        headers = {"Authorization": f"Bearer {access_token}"}
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
         response = requests.get(BASE_SPOTIFY_URL, headers=headers)
 
         if response.status_code == 200:
@@ -60,13 +83,31 @@ def get_user_info():
     
 
 
-@user_blueprint.route('/album/<string:userId>', methods=['GET'])
-def get_user_playlists(userId):
+@user_blueprint.route('/playlists', methods=['GET'])
+def get_user_playlists():
+    print("in user albums")
     try:
         namesOnly = request.args.get('namesOnly', 'false').lower() == 'true'
 
-        access_token = get_access_token()
-        headers = {"Authorization": f"Bearer {access_token}"}
+        user_info = get_user_info_from_spotify()
+
+        if not user_info:
+            return jsonify({"error": "Failed to fetch user info"}), 500
+
+        userId = user_info.get('id')
+        if not userId:
+            return jsonify({"error": "User ID not found in user info"}), 500
+        
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
         endpoint = f"{SPOTIFY_URL_USER_SEARCH}/users/{userId}/playlists?limit=100"
         print(endpoint)
         
@@ -101,8 +142,15 @@ def post_create_new_album():
         else:
             return jsonify({"error": f"Failed to fetch userId: {response.status_code}"}), response.status_code 
         
-        access_token = get_access_token()
-        headers = {"Authorization": f"Bearer {access_token}"}
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
 
         endpoint = f"{SPOTIFY_URL_USER_SEARCH}/users/{userId}/playlists"
         print(endpoint)
@@ -116,6 +164,30 @@ def post_create_new_album():
             return jsonify({"error": f"Failed to create new album: {response.json()}"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500 
+    
+
+
+def get_user_info_from_spotify():
+    """ Helper function to fetch user info from Spotify. """
+    try:
+        if not session.get('access_token'):
+            return None
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return None
+
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        response = requests.get(BASE_SPOTIFY_URL, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
+    except Exception as e:
+        return None
 
 
     

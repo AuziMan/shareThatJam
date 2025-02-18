@@ -1,7 +1,7 @@
-from flask import Flask, jsonify, request, Blueprint
+import datetime
+from flask import Flask, jsonify, redirect, request, Blueprint, session
 from dotenv import load_dotenv
 import requests
-from server.utils import get_access_token
 
 
 search_blueprint = Blueprint("search", __name__)
@@ -13,8 +13,15 @@ BASE_SPOTIFY_URL = "https://api.spotify.com/v1"
 @search_blueprint.route('/track/<string:trackId>', methods=['GET'])
 def get_track_by_id(trackId):
     try:
-        access_token = get_access_token()
-        headers = {"Authorization": f"Bearer {access_token}"}
+        if 'access_token' not in session:
+            return redirect('/login')
+
+        if datetime.now().timestamp() > session['expires_at']:
+            return redirect('/refresh-token')
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
         endpoint = f"{BASE_SPOTIFY_URL}/tracks/{trackId}"
         print(endpoint)
         response = requests.get(endpoint, headers=headers)
@@ -31,8 +38,15 @@ def get_track_by_id(trackId):
 @search_blueprint.route('/album/<string:albumId>', methods=['GET'])
 def get_album_by_id(albumId):
     try:
-        access_token = get_access_token()
-        headers = {"Authorization": f"Bearer {access_token}"}
+        if 'access_token' not in session:
+            return redirect('/login')
+
+        if datetime.now().timestamp() > session['expires_at']:
+            return redirect('/refresh-token')
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
         endpoint = f"{BASE_SPOTIFY_URL}/albums/{albumId}"
         print(endpoint)
         response = requests.get(endpoint, headers=headers)
