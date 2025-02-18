@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request, Blueprint
 from dotenv import load_dotenv
 import requests
 from server.utils import get_access_token
+import json
 
 user_blueprint = Blueprint("user", __name__)
 
@@ -82,6 +83,39 @@ def get_user_playlists(userId):
             return jsonify({"error": f"Failed to fetch now playing: {response.status_code}"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+@user_blueprint.route('/newAlbum', methods=['POST'])
+def post_create_new_album():
+    try:
+
+        requestBody = request.get_json()
+
+        user_info_endpoint = "http://127.0.0.1:4000/user/info"
+        user_info_response = requests.get(user_info_endpoint)
+
+        if user_info_response.status_code == 200:
+            data = user_info_response.json()
+            userId = data.get("id")
+            print(userId)
+        else:
+            return jsonify({"error": f"Failed to fetch userId: {response.status_code}"}), response.status_code 
+        
+        access_token = get_access_token()
+        headers = {"Authorization": f"Bearer {access_token}"}
+
+        endpoint = f"{SPOTIFY_URL_USER_SEARCH}/users/{userId}/playlists"
+        print(endpoint)
+
+
+        response = requests.post(endpoint, headers=headers, json=requestBody)
+
+        if response.status_code == 201:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": f"Failed to create new album: {response.json()}"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500 
 
 
     

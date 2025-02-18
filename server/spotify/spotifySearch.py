@@ -25,3 +25,21 @@ def get_track_by_id(trackId):
             return jsonify({"error": f"Failed to fetch track by trackId: {trackId}, {response.status_code}"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+
+@search_blueprint.route('/album/<string:albumId>', methods=['GET'])
+def get_album_by_id(albumId):
+    try:
+        access_token = get_access_token()
+        headers = {"Authorization": f"Bearer {access_token}"}
+        endpoint = f"{BASE_SPOTIFY_URL}/albums/{albumId}"
+        print(endpoint)
+        response = requests.get(endpoint, headers=headers)
+
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": f"Failed to fetch track by trackId: {albumId}, {response.status_code}"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

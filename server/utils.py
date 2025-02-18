@@ -23,6 +23,7 @@ def get_access_token():
     data = {
         "grant_type": "refresh_token",
         "refresh_token": SPOTIFY_RT
+        # "scope": "playlist-modify-public"
     }
 
     response = requests.post(TOKEN_ENDPOINT, headers=headers, data=data)
