@@ -4,6 +4,8 @@ from flask import Flask, jsonify, redirect, url_for, request, Blueprint, session
 from dotenv import load_dotenv
 import requests
 import json
+from server.spotify.utils.sharedFunctions import format_response_array, format_response_obj
+
 
 user_blueprint = Blueprint("user", __name__)
 
@@ -34,13 +36,7 @@ def get_top_tracks():
         if response.status_code == 200:
             data = response.json()
         
-            track_info = [
-                {
-                    "track": track["name"],
-                    "artist": track["artists"][0]["name"] if track["artists"] else "Unknown Artist",
-                }
-                for track in data.get("items", [])
-            ]
+            track_info = format_response_array(data)
 
             return jsonify(track_info)
         else:
@@ -67,12 +63,8 @@ def get_now_playing():
 
             data = response.json()
         
-            track_info = [
-                {
-                    "track": data["item"]["name"],
-                    "artist": data["item"]["artists"][0]["name"] if data["item"]["artists"] else "Unknown Artist",
-                }
-            ]
+            track_info = format_response_obj(data)
+            
             return jsonify(track_info)
         else:
             return jsonify({"error": f"Failed to fetch now playing: {response.status_code}"}), response.status_code
