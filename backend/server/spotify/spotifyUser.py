@@ -64,7 +64,7 @@ def get_now_playing():
             data = response.json()
         
             track_info = format_response_obj(data)
-            
+
             return jsonify(track_info)
         else:
             return jsonify({"error": f"Failed to fetch now playing: {response.status_code}"}), response.status_code
@@ -130,7 +130,7 @@ def get_user_playlists():
             data = response.json()
             if namesOnly:
                 album_names = [playlist["name"] for playlist in data.get("items", [])]
-                return jsonify({"albums": album_names})
+                return jsonify({"Your Public Albums": album_names})
             else:
                 return jsonify(data)
         else:

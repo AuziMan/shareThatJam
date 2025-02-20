@@ -9,7 +9,6 @@ def format_response_array(data):
         }
         for track in data.get("items", [])
     ]
-
     return track_info
 
 
@@ -22,5 +21,4 @@ def format_response_obj(data):
             "artist": data["item"]["artists"][0]["name"] if data["item"]["artists"] else "Unknown Artist",
         }
     ]
-
     return track_info
