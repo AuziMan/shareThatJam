@@ -10,9 +10,11 @@ from server.spotify.utils.sharedFunctions import format_response_array, format_r
 user_blueprint = Blueprint("user", __name__)
 
 BASE_SPOTIFY_URL = "https://api.spotify.com/v1/me"
+SPOTIFY_URL_USER_SEARCH = "https://api.spotify.com/v1"
+
+SPOTIFY_TOP_TRACKS_ENDPOINT = f"{BASE_SPOTIFY_URL}/top/tracks"
 SPOTIFY_TOP_TRACKS_ENDPOINT = f"{BASE_SPOTIFY_URL}/top/tracks"
 SPOTIFY_NOW_PLAYING_ENDPOINT = f"{BASE_SPOTIFY_URL}/player/currently-playing"
-SPOTIFY_URL_USER_SEARCH = "https://api.spotify.com/v1"
  
 
 
@@ -142,6 +144,42 @@ def get_user_playlists():
         return jsonify({"error": str(e)}), 500
     
 
+@user_blueprint.route('/playlistTracks', methods=['GET'])
+def get_user_playlist_songs():
+    try:
+        playlist_id = request.args.get('playlistId')
+        namesOnly = request.args.get('namesOnly', 'false').lower() == 'true'
+
+        
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        endpoint = f"{SPOTIFY_URL_USER_SEARCH}/playlists/{playlist_id}/tracks?limit=100"
+        print(endpoint)
+        
+        response = requests.get(endpoint, headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            if namesOnly:
+                track_names = [tracks["track"]["name"] for tracks in data.get("items", [])]
+                return jsonify({"Playlist Tracks": track_names})
+            else:
+                return jsonify(data)
+        else:
+            return jsonify({"error": f"Failed to fetch now playing: {response.status_code}"}), response.status_code
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
 @user_blueprint.route('/newAlbum', methods=['POST'])
 def post_create_new_album():
     try:
@@ -181,6 +219,33 @@ def post_create_new_album():
     except Exception as e:
         return jsonify({"error": str(e)}), 500 
     
+
+
+def get_user_playlist_id_spotify():
+    try:
+
+        userId = get_user_info_from_spotify()
+
+        print(userId)
+        if not session.get('access_token'):
+            return None
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return None
+
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        response = requests.get(f"{SPOTIFY_URL_USER_SEARCH}/users/{userId}/playlists", headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
+        
+    except Exception as e:
+        return None
 
 
 def get_user_info_from_spotify():

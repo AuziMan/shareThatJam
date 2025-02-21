@@ -7,8 +7,6 @@ from server.spotify.utils.auth import auth_blueprint
 
 import secrets
 
-
-
 app = Flask(__name__)
 
 app.secret_key = secrets.token_hex(16)

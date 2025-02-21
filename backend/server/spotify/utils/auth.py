@@ -13,6 +13,8 @@ auth_blueprint = Blueprint("auth", __name__)
 SPOTIFY_CID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CS = os.getenv('SPOTIFY_CLIENT_SECRET')
 LOCAL_BASE_URL = os.getenv('LOCAL_BASE_URL')
+FRONTEND_BASE_URL = os.getenv('FRONTEND_BASE_URL')
+
 
 REDIRECT_URI = f"{LOCAL_BASE_URL}/auth/callback"
 
@@ -61,7 +63,7 @@ def callback():
 
         return redirect(url_for('user.get_now_playing'))
         # print({"message": "Authentication successful"})
-        # return redirect('http://localhost:3000/top-tracks')
+        # return redirect(f'{FRONTEND_BASE_URL}/home')
 
 
 @auth_blueprint.route('/refresh_token')

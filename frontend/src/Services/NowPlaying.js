@@ -7,22 +7,31 @@ const NowPlaying = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch currently playing track from Flask backend
-        axios.get('/user/nowPlaying')
-            .then(response => {
-                console.log("Response Data", response);
-                
-                if(response.data.length > 0) {
-                    setTrack(response.data[0])
-                } else {
-                    setTrack(null)
-                }
-                setLoading(false);
-            })
-            .catch(error => {
-                setError(error);
-                setLoading(false);
-            });
+        const fetchNowPlaying = () => {
+
+            axios.get('/user/nowPlaying')
+                .then(response => {
+                    console.log("Response Data", response);
+                    
+                    if (response.data.length > 0) {
+                        setTrack(response.data[0])
+                    } else {
+                        setTrack(null)
+                    }
+                    setLoading(false);
+                })
+                .catch(error => {
+                    setError(error);
+                    setLoading(false);
+                });
+            };
+
+            fetchNowPlaying(); // Initial fetch
+
+            // Polling every 30 seconds to update the currently playing track
+            const interval = setInterval(fetchNowPlaying, 100000);
+
+            return () => clearInterval(interval); // Cleanup interval on unmount
     }, []);
 
     if (loading) return <div>Loading...</div>;

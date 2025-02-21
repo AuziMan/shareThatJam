@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const TopTracks = () => {
-    const [tracks, setTracks] = useState([]);
+const UserPlaylists = () => {
+    const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         // Fetch top tracks from Flask backend
-        axios.get('/user/topTracks')
+        axios.get('/user/playlists')
             .then(response => {
-                setTracks(response.data);
-                console.log("Top Tracks", response.data)
+                setPlaylists(response.data.items);
+                console.log("User Playlists", response.data)
                 setLoading(false);
             })
             .catch(error => {
@@ -25,11 +25,11 @@ const TopTracks = () => {
 
     return (
         <div>
-            <h1>Your Top Tracks</h1>
+            <h1>Your Public Playlists</h1>
             <ul>
-                {tracks.map((track, index) => (
+                {playlists.map((playlist, index) => (
                     <li key={index}>
-                        <strong>{track.track}</strong> by {track.artist}
+                        <strong>{playlist.name}</strong>
                     </li>
                 ))}
             </ul>
@@ -37,4 +37,4 @@ const TopTracks = () => {
     );
 };
 
-export default TopTracks;
+export default UserPlaylists;
