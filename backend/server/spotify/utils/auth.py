@@ -59,7 +59,9 @@ def callback():
         session['refresh_token'] = token_info['refresh_token']
         session['expires_at'] = datetime.now().timestamp() + token_info['expires_in'] 
 
-        return redirect(url_for('user.get_top_tracks'))
+        return redirect(url_for('user.get_now_playing'))
+        # print({"message": "Authentication successful"})
+        # return redirect('http://localhost:3000/top-tracks')
 
 
 @auth_blueprint.route('/refresh_token')
@@ -81,5 +83,5 @@ def refresh_token():
         session['access_token'] = new_token_info['access_token']
         session['expires_at'] = datetime.now().timestamp() + new_token_info['expires_in'] 
 
-        return redirect('user/topTracks')
-
+        next_url = session.pop('next_url', '/user/topTracks')
+        return redirect(next_url)

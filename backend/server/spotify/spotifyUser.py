@@ -66,6 +66,9 @@ def get_now_playing():
             track_info = format_response_obj(data)
 
             return jsonify(track_info)
+        
+        elif response.status_code == 204:
+            return jsonify("Play some music brah")
         else:
             return jsonify({"error": f"Failed to fetch now playing: {response.status_code}"}), response.status_code
     except Exception as e:
