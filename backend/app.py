@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 app.secret_key = secrets.token_hex(16)
 
-CORS(app)
+CORS(app, supports_credentials=True)
 
 app.register_blueprint(user_blueprint, url_prefix='/user')
 app.register_blueprint(auth_blueprint, url_prefix='/auth')

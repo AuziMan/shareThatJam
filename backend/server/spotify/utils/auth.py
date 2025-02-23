@@ -61,9 +61,9 @@ def callback():
         session['refresh_token'] = token_info['refresh_token']
         session['expires_at'] = datetime.now().timestamp() + token_info['expires_in'] 
 
-        return redirect(url_for('user.get_now_playing'))
-        # print({"message": "Authentication successful"})
-        # return redirect(f'{FRONTEND_BASE_URL}/home')
+        # return redirect(url_for('user.get_now_playing'))
+        print({"message": "Authentication successful"})
+        return redirect(f'{FRONTEND_BASE_URL}/home')
 
 
 @auth_blueprint.route('/refresh_token')

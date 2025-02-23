@@ -150,7 +150,6 @@ def get_user_playlist_songs():
         playlist_id = request.args.get('playlistId')
         namesOnly = request.args.get('namesOnly', 'false').lower() == 'true'
 
-        
         if not session.get('access_token'):
             return redirect(url_for('auth.login'))
 

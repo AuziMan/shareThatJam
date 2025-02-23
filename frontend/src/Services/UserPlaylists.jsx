@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const UserPlaylists = () => {
     const [playlists, setPlaylists] = useState([]);
@@ -24,15 +25,19 @@ const UserPlaylists = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div>
+        <div className='playlist-container'>
             <h1>Your Public Playlists</h1>
-            <ul>
-                {playlists.map((playlist, index) => (
-                    <li key={index}>
-                        <strong>{playlist.name}</strong>
-                    </li>
+            <div>
+                {playlists.map((playlist) => (
+                    <div className="playlist-names">
+                        <Link 
+                            key={playlist.id}
+                            to={`/playlistTracks/${playlist.id}`}>
+                            <button className='team-buttons'>{playlist.name}</button>
+                        </Link>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };

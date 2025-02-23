@@ -6,6 +6,7 @@ import TopTracks from './Services/TopTracks';
 import NowPlaying from './Services/NowPlaying';
 import HomePage from './views/HomePage';
 import UserPlaylists from './Services/UserPlaylists';
+import UserPlaylistTracks from './Services/UserPlaylistTracks';
 
 function App() {
     return (
@@ -17,6 +18,8 @@ function App() {
                 <Route path="/now-playing" element={<NowPlaying />} />
                 <Route path="/callback" element={<Callback />} />
                 <Route path="/user-playlists" element={<UserPlaylists />} />
+                <Route path="/playlistTracks/:playlistId" element={<UserPlaylistTracks />} />
+
 
             </Routes>
         </Router>

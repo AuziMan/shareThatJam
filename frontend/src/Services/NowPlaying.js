@@ -11,7 +11,7 @@ const NowPlaying = () => {
 
             axios.get('/user/nowPlaying')
                 .then(response => {
-                    console.log("Response Data", response);
+                    console.log("Now Playing Response", response);
                     
                     if (response.data.length > 0) {
                         setTrack(response.data[0])
@@ -26,12 +26,11 @@ const NowPlaying = () => {
                 });
             };
 
-            fetchNowPlaying(); // Initial fetch
+            fetchNowPlaying(); 
 
-            // Polling every 30 seconds to update the currently playing track
-            const interval = setInterval(fetchNowPlaying, 100000);
+            const interval = setInterval(fetchNowPlaying, 10000);
 
-            return () => clearInterval(interval); // Cleanup interval on unmount
+            return () => clearInterval(interval);
     }, []);
 
     if (loading) return <div>Loading...</div>;
