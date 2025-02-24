@@ -21,7 +21,7 @@ def format_response_obj(data):
         {
             "track": data["item"]["name"],
             "artist": data["item"]["artists"][0]["name"] if data["item"]["artists"] else "Unknown Artist",
-            "trackImg": data["item"]["images"]["url"]
+            "albumImg": data["item"]["album"]["images"][0]["url"] if data["item"]["album"]["images"] else "unknown image"
         }
     ]
     return track_info

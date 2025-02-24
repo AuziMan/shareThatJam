@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../utils/config';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import TrackCard from '../Components/TrackCard';
+
 
 const UserPlaylistTracks = () => {
     const { playlistId } = useParams(); 
@@ -28,13 +30,17 @@ const UserPlaylistTracks = () => {
     return (
         <div className='playlist-tracks-container'>
             <h1>Playlist Tracks</h1>
-            <ul>
+            <div className="d-flex flex-wrap justify-content-center">
                 {tracks.map((track, index) => (
-                    <li key={index}>
-                        {track.track.name} - {track.track.artists.map(artist => artist.name).join(", ")}
-                    </li>
+                    <TrackCard
+                        key={index}
+                        trackName={track.track.name}
+                        artistName={track.track.artists.map(artist => artist.name).join(", ")}
+                        albumImg={track.track.album.images[0].url} // Assuming the album image is at this location
+                        onClick={() => console.log(`Play ${track.track.name}`)} // Customize play action
+                    />
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };

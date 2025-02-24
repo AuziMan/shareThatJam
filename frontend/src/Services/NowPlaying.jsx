@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import TrackCard from '../Components/TrackCard';
 
 const NowPlaying = () => {
     const [track, setTrack] = useState(null);
@@ -37,17 +38,16 @@ const NowPlaying = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div>
-            <h1>Now Playing:</h1>
-            {track ? (
-                <div>
-                    <p><strong>{track.track}</strong> by {track.artist}</p>
-                </div>
-            ) : (
-                <p>No Track Playing</p>
-            )
-
-            }
+        <div className="d-flex justify-content-center">
+            <div className="now-playing-card">
+            {track && (
+                <TrackCard
+                    trackName={track.track}
+                    artistName={track.artist}
+                    albumImg={track.albumImg}
+                />
+            )}
+            </div>
         </div>
     );
 };
