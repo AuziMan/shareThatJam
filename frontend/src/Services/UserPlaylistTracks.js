@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const UserPlaylistTracks = () => {
-    const { playlistId } = useParams();  // Get playlist ID from URL
+    const { playlistId } = useParams(); 
     const [tracks, setTracks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

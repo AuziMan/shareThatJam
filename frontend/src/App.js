@@ -19,8 +19,6 @@ function App() {
                 <Route path="/callback" element={<Callback />} />
                 <Route path="/user-playlists" element={<UserPlaylists />} />
                 <Route path="/playlistTracks/:playlistId" element={<UserPlaylistTracks />} />
-
-
             </Routes>
         </Router>
     );

@@ -13,7 +13,6 @@ BASE_SPOTIFY_URL = "https://api.spotify.com/v1/me"
 SPOTIFY_URL_USER_SEARCH = "https://api.spotify.com/v1"
 
 SPOTIFY_TOP_TRACKS_ENDPOINT = f"{BASE_SPOTIFY_URL}/top/tracks"
-SPOTIFY_TOP_TRACKS_ENDPOINT = f"{BASE_SPOTIFY_URL}/top/tracks"
 SPOTIFY_NOW_PLAYING_ENDPOINT = f"{BASE_SPOTIFY_URL}/player/currently-playing"
  
 
@@ -37,7 +36,7 @@ def get_top_tracks():
 
         if response.status_code == 200:
             data = response.json()
-        
+
             track_info = format_response_array(data)
 
             return jsonify(track_info)

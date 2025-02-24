@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Card, Container, Row, Col } from 'react-bootstrap';
 
 const TopTracks = () => {
     const [tracks, setTracks] = useState([]);
@@ -7,11 +8,10 @@ const TopTracks = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch top tracks from Flask backend
         axios.get('/user/topTracks')
             .then(response => {
                 setTracks(response.data);
-                console.log("Top Tracks", response.data)
+                console.log("Top Tracks", response.data);
                 setLoading(false);
             })
             .catch(error => {
@@ -24,16 +24,27 @@ const TopTracks = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div>
-            <h1>Your Top Tracks</h1>
-            <ul>
+        <Container className="mt-4">
+            <h1 className="text-center mb-4">Your Top Tracks</h1>
+            <Row className="g-4">
                 {tracks.map((track, index) => (
-                    <li key={index}>
-                        <strong>{track.track}</strong> by {track.artist}
-                    </li>
+                    <Col key={index} xs={12} sm={6} md={4} lg={3}> 
+                        <Card className="shadow-sm text-center">
+                            <Card.Img 
+                                variant="top" 
+                                src={track.albumImg} 
+                                alt={track.track} 
+                                style={{ height: "180px", objectFit: "cover" }} 
+                            />
+                            <Card.Body>
+                                <Card.Title className="fs-6">{track.track}</Card.Title>
+                                <Card.Text className="text-muted">{track.artist}</Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Col>
                 ))}
-            </ul>
-        </div>
+            </Row>
+        </Container>
     );
 };
 
