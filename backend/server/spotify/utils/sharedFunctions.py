@@ -25,3 +25,14 @@ def format_response_obj(data):
         }
     ]
     return track_info
+
+
+def format_playlist_tracks(data):
+    playlist_info = [
+        {
+            "tracks": [data["track"]["name"] for data in data.get("items", [])],
+            "playlist_name": [data["name"]]
+        }
+    ]
+
+    return playlist_info

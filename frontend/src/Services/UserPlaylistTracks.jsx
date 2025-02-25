@@ -8,6 +8,7 @@ import TrackCard from '../Components/TrackCard';
 const UserPlaylistTracks = () => {
     const { playlistId } = useParams(); 
     const [tracks, setTracks] = useState([]);
+    const [playlistName, setPlaylistName] = useState(""); // State for playlist name
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -16,6 +17,8 @@ const UserPlaylistTracks = () => {
             .then(response => {
                 console.log("Playlist Tracks", response.data);
                 setTracks(response.data.items || []);
+                setPlaylistName(response.data.name || "Unknown Playlist"); // Set playlist name
+
                 setLoading(false);
             })
             .catch(error => {
@@ -28,8 +31,8 @@ const UserPlaylistTracks = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div className='playlist-tracks-container'>
-            <h1>Playlist Tracks</h1>
+        <div className="d-flex flex-column align-items-center">
+        <h1>Playlist Tracks in <b>{playlistName}</b></h1>
             <div className="d-flex flex-wrap justify-content-center">
                 {tracks.map((track, index) => (
                     <TrackCard

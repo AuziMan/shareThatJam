@@ -1,0 +1,19 @@
+/* Hover card styles */
+.hover-card-container {
+    position: fixed;  /* Use fixed positioning to stay on top */
+    z-index: 9999;  /* Ensure it's above other elements */
+    opacity: 0;  /* Initially set opacity to 0 */
+    visibility: hidden;  /* Hide element */
+    transition: opacity 2s ease-in-out, visibility 0s 2s; /* 2s opacity transition */
+    width: 18rem;  /* Adjust to match card size */
+  }
+  
+  .hover-card-container.show {
+    opacity: 1;  /* Make it fully visible when the class is added */
+    visibility: visible;  /* Make it visible */
+  }
+  
+  .hover-card-container:hover {
+    transform: scale(1.05);  /* Optional: Scale effect when hovered */
+  }
+  

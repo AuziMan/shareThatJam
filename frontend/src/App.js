@@ -8,10 +8,12 @@ import NowPlaying from './Services/NowPlaying';
 import HomePage from './views/HomePage';
 import UserPlaylists from './Services/UserPlaylists';
 import UserPlaylistTracks from './Services/UserPlaylistTracks';
+import Header from './Components/Header';
 
 function App() {
     return (
         <Router>
+            <Header/>
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/home" element={<HomePage />} />

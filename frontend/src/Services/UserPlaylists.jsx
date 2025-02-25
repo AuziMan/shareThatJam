@@ -29,11 +29,13 @@ const UserPlaylists = () => {
             <h1>Your Public Playlists</h1>
             <div>
                 {playlists.map((playlist) => (
-                    <div className="playlist-names">
+                    <div className="d-flex justify-content-center mt-3">
                         <Link 
                             key={playlist.id}
                             to={`/playlistTracks/${playlist.id}`}>
-                            <button className='team-buttons'>{playlist.name}</button>
+                            <button className='btn btn-primary rounded-pill shadow-sm px-4 py-2'>
+                            {playlist.name}
+                            </button>
                         </Link>
                     </div>
                 ))}

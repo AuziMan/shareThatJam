@@ -4,7 +4,7 @@ from flask import Flask, jsonify, redirect, url_for, request, Blueprint, session
 from dotenv import load_dotenv
 import requests
 import json
-from server.spotify.utils.sharedFunctions import format_response_array, format_response_obj
+from server.spotify.utils.sharedFunctions import format_response_array, format_response_obj, format_playlist_tracks
 
 
 user_blueprint = Blueprint("user", __name__)
@@ -159,20 +159,29 @@ def get_user_playlist_songs():
             'Authorization': f"Bearer {session['access_token']}"
         }
 
-        endpoint = f"{SPOTIFY_URL_USER_SEARCH}/playlists/{playlist_id}/tracks?limit=100"
-        print(endpoint)
-        
-        response = requests.get(endpoint, headers=headers)
+        # Get Playlist Tracks
+        tracks_endpoint = f"{SPOTIFY_URL_USER_SEARCH}/playlists/{playlist_id}/tracks?limit=100"
+        tracks_response = requests.get(tracks_endpoint, headers=headers)
 
-        if response.status_code == 200:
-            data = response.json()
+        # Get Playlist info (for the name)
+        playlist_endpoint = f"{SPOTIFY_URL_USER_SEARCH}/playlists/{playlist_id}"
+        playlist_response = requests.get(playlist_endpoint, headers=headers)
+
+
+        if tracks_response.status_code == 200 and playlist_response.status_code == 200:
+            tracks_data = tracks_response.json()
+            playlist_data = playlist_response.json()
+
             if namesOnly:
-                track_names = [tracks["track"]["name"] for tracks in data.get("items", [])]
-                return jsonify({"Playlist Tracks": track_names})
+                playlist_info = format_playlist_tracks(tracks_data, playlist_data)
+                return jsonify(playlist_info)
             else:
-                return jsonify(data)
+                return jsonify({
+                    "name": playlist_data.get("name"),  # Include playlist name in the response
+                    "items": tracks_data.get("items", [])
+                })
         else:
-            return jsonify({"error": f"Failed to fetch now playing: {response.status_code}"}), response.status_code
+            return jsonify({"error": "Failed to fetch playlist data"}), 400
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

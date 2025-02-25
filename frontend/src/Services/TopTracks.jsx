@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, Container, Row, Col } from 'react-bootstrap';
+import TrackCard from '../Components/TrackCard';
 
 const TopTracks = () => {
     const [tracks, setTracks] = useState([]);
@@ -29,18 +30,12 @@ const TopTracks = () => {
             <Row className="g-4">
                 {tracks.map((track, index) => (
                     <Col key={index} xs={12} sm={6} md={4} lg={3}> 
-                        <Card className="shadow-sm text-center">
-                            <Card.Img 
-                                variant="top" 
-                                src={track.albumImg} 
-                                alt={track.track} 
-                                style={{ height: "180px", objectFit: "cover" }} 
-                            />
-                            <Card.Body>
-                                <Card.Title className="fs-6">{track.track}</Card.Title>
-                                <Card.Text className="text-muted">{track.artist}</Card.Text>
-                            </Card.Body>
-                        </Card>
+                        <TrackCard
+                            trackName={track.track} // Assuming `track` is the track name
+                            artistName={track.artist} // Assuming `artist` is the artist name
+                            albumImg={track.albumImg} // Assuming `albumImg` is the album image URL
+                            onClick={() => console.log(`Play ${track.track}`)} // Customize this action
+                        />
                     </Col>
                 ))}
             </Row>
