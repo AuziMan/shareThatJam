@@ -74,6 +74,8 @@ function Header() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/top-tracks">Your Top Tracks</Nav.Link>
+            <Nav.Link href="/">Login</Nav.Link>
+
             
             {/* Right Dropdown for User Playlists */}
             <NavDropdown title="Your Playlists" id="basic-nav-dropdown">
