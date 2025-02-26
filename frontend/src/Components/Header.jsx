@@ -26,7 +26,7 @@ function Header() {
     };
 
     const fetchPlaylists = () => {
-      axios.get('/user/playlists')
+      axios.get('/playlist/playlists')
         .then(response => {
           if (response.data && response.data.items) {
             setPlaylists(response.data.items);

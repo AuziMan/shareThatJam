@@ -1,6 +1,15 @@
 # Shared functions
 
 # Formats an array of tracks, and returns the track, artist, and trackimg
+import datetime
+from flask import session
+import requests
+
+
+BASE_SPOTIFY_URL = "https://api.spotify.com/v1/me"
+
+
+
 def format_response_array(data):
     track_info = [
         {
@@ -36,3 +45,26 @@ def format_playlist_tracks(data):
     ]
 
     return playlist_info
+
+
+def get_user_info_from_spotify():
+    """ Helper function to fetch user info from Spotify. """
+    try:
+        if not session.get('access_token'):
+            return None
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return None
+
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        response = requests.get(BASE_SPOTIFY_URL, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
+    except Exception as e:
+        return None

@@ -13,7 +13,7 @@ const UserPlaylistTracks = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get(`${API_BASE_URL}/user/playlistTracks?playlistId=${playlistId}`, { withCredentials: true })
+        axios.get(`${API_BASE_URL}/playlist/playlistTracks?playlistId=${playlistId}`, { withCredentials: true })
             .then(response => {
                 console.log("Playlist Tracks", response.data);
                 setTracks(response.data.items || []);

@@ -9,7 +9,7 @@ const UserPlaylists = () => {
 
     useEffect(() => {
         // Fetch top tracks from Flask backend
-        axios.get('/user/playlists')
+        axios.get('/playlist/playlists')
             .then(response => {
                 setPlaylists(response.data.items);
                 console.log("User Playlists", response.data)
