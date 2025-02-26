@@ -187,44 +187,61 @@ def get_user_playlist_songs():
         return jsonify({"error": str(e)}), 500
     
 
-@user_blueprint.route('/newAlbum', methods=['POST'])
+@user_blueprint.route('/createPlaylist', methods=['POST'])
 def post_create_new_album():
     try:
+        # Get the body of the request (expecting JSON with 'name')
+        playlist_info = request.get_json()
 
-        requestBody = request.get_json()
+        playlist_name = playlist_info.get('name')
+        requestBody = {
+            "name": playlist_name,
+            "description": "New Playlist from Share That Jam",
+            "public": True
+        }
+        print(requestBody)
+        if not requestBody or not requestBody.get('name'):
+            return jsonify({"error": "Playlist name is required."}), 400
 
-        user_info_endpoint = "http://127.0.0.1:4000/user/info"
-        user_info_response = requests.get(user_info_endpoint)
+        user_info = get_user_info_from_spotify()
 
-        if user_info_response.status_code == 200:
-            data = user_info_response.json()
-            userId = data.get("id")
-            print(userId)
-        else:
-            return jsonify({"error": f"Failed to fetch userId: {response.status_code}"}), response.status_code 
+        if not user_info:
+            return jsonify({"error": "Failed to fetch user info"}), 500
+
+        userId = user_info.get('id')
+
+        if not userId:
+            return jsonify({"error": "User ID not found in user info"}), 500
         
+        # Check if the access token is in the session
         if not session.get('access_token'):
             return redirect(url_for('auth.login'))
 
+        # Ensure the token is valid (you can also have a separate function to handle expiry)
         if datetime.datetime.now().timestamp() > session['expires_at']:
             return redirect(url_for('auth.refresh_token'))
         
+        # Authorization header
         headers = {
             'Authorization': f"Bearer {session['access_token']}"
         }
 
+        # Now that we have the userId, create the playlist
         endpoint = f"{SPOTIFY_URL_USER_SEARCH}/users/{userId}/playlists"
-        print(endpoint)
+        print(f"Playlist creation endpoint: {endpoint}, headers {headers}")
 
-
+        # Make the request to create the playlist
         response = requests.post(endpoint, headers=headers, json=requestBody)
 
         if response.status_code == 201:
             return jsonify(response.json())
         else:
-            return jsonify({"error": f"Failed to create new album: {response.json()}"}), response.status_code
+            return jsonify({"error": f"Failed to create new playlist: {response.json()}"}), response.status_code
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500 
+        # General error handler
+        print(f"Error: {e}")
+        return jsonify({"error": str(e)}), 500
     
 
 
