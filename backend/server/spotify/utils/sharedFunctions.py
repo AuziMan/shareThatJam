@@ -15,8 +15,8 @@ def format_response_array(data):
         {
             "track": track["name"],
             "artist": track["artists"][0]["name"] if track["artists"] else "Unknown Artist",
-            "albumImg": track["album"]["images"][0]["url"] if track["album"]["images"] else "unknown image"
-            # "trackimg": track["album"]["images"][0]["url"] if track["images"] else "unknown image"
+            "albumImg": track["album"]["images"][0]["url"] if track["album"]["images"] else "unknown image",
+            "id": track["id"]
         }
         for track in data.get("items", [])
     ]

@@ -67,19 +67,21 @@ function Header() {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary px-3" style={{ position: 'relative' }}>
-      <Container>
+<Navbar expand="lg" className="px-3" style={{ backgroundColor: '#253B66', color: '#F5F5F5', position: 'relative' }}>
+  <Container>
         {/* Left Side: App Brand */}
         <Navbar.Brand href="/home">Share That Jam</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/top-tracks">Your Top Tracks</Nav.Link>
+            <Nav.Link href="/user-reccomended">Reccomended Tracks</Nav.Link>
+
             <Nav.Link href="/">Login</Nav.Link>
 
             
             {/* Right Dropdown for User Playlists */}
-            <NavDropdown title="Your Playlists" id="basic-nav-dropdown">
+            <NavDropdown title="Your Playlists" style={{ backgroundColor: '#253B66', color: '#F5F5F5', position: 'relative' }} >
               {playlists.length > 0 ? (
                 playlists.map((playlist) => (
                   <NavDropdown.Item key={playlist.id} href={`/playlistTracks/${playlist.id}`}>

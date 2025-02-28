@@ -36,9 +36,7 @@ def get_top_tracks():
 
         if response.status_code == 200:
             data = response.json()
-
             track_info = format_response_array(data)
-
             return jsonify(track_info)
         else:
             return jsonify({"error": f"Failed to fetch top tracks: {response.status_code}"}), response.status_code
@@ -79,6 +77,7 @@ def get_now_playing():
 @user_blueprint.route('/info', methods=['GET'])
 def get_user_info():
     try:
+
         if not session.get('access_token'):
             return redirect(url_for('auth.login'))
 
@@ -97,4 +96,44 @@ def get_user_info():
             return jsonify({"error": f"Failed to fetch now playing: {response.status_code}"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+# Implement user reccomendations:
+# 1. 'https://api.spotify.com/v1/recommendations'
+# 2. Pass in top 4 track Ids from 'Top Tracks' as 'seeds'
+
+@user_blueprint.route('/recommendations', methods=['GET'])
+def get_reccomended_tracks():
+    try:
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        print("in reccs")
+
+        top_tracks_response = requests.get(url_for('user.get_top_tracks', _external=True), headers=headers)
+        
+        top_tracks = top_tracks_response.json()  
+        track_ids = [track['id'] for track in top_tracks[:4]]
+        track_seeds = ",".join(track_ids)
+        response = requests.get(f"{SPOTIFY_URL_USER_SEARCH}/recommendations?seed_tracks={track_seeds}", headers=headers)
+
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            print(f"Failed to fetch recommendations: {response.status_code}")
+            return jsonify({"error": f"Failed to fetch recommendations: {response.status_code}"}), response.status_code
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+
+
     
