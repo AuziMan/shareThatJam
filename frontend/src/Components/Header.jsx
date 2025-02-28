@@ -75,7 +75,9 @@ function Header() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/top-tracks">Your Top Tracks</Nav.Link>
-            <Nav.Link href="/user-reccomended">Reccomended Tracks</Nav.Link>
+
+            {/* Endpoint was deprecated in spotify :( HUGE L */}
+            {/* <Nav.Link href="/user-reccomended">Reccomended Tracks</Nav.Link> */}
 
             <Nav.Link href="/">Login</Nav.Link>
 

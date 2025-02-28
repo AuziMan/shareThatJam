@@ -3,6 +3,8 @@ import axios from 'axios';
 import {Container, Row, Col } from 'react-bootstrap';
 import TrackCard from '../Components/TrackCard';
 
+// Spotifys reccomendations endpoint was deprecated. SUCKS! :(
+
 const UserReccomendedTracks = () => {
     const [tracks, setTracks] = useState([]);
     const [loading, setLoading] = useState(true);
