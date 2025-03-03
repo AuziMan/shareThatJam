@@ -1,0 +1,36 @@
+.track-card {
+    width: 18rem;
+    margin: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background: #E6E6E6; /* Spotify green */
+    color: white;
+    text-align: center;
+}
+
+.track-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.track-card-img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.track-card-body {
+    padding: 15px;
+}
+
+.track-card-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.track-card-text {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}

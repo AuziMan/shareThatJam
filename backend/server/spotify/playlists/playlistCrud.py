@@ -79,17 +79,24 @@ def get_user_playlist_songs():
 
 
         if tracks_response.status_code == 200 and playlist_response.status_code == 200:
+            
             tracks_data = tracks_response.json()
             playlist_data = playlist_response.json()
+            # filtered_tracks_data = tracks_data["items"][:1]
+
+            playlist_tracks = format_playlist_tracks(tracks_data)
+            platlist_name =  playlist_data.get("name")
+
+            formatted_response = {
+                "playlistName": platlist_name,
+                "playlistTracks": playlist_tracks
+            }
 
             if namesOnly:
                 playlist_info = format_playlist_tracks(tracks_data, playlist_data)
                 return jsonify(playlist_info)
             else:
-                return jsonify({
-                    "name": playlist_data.get("name"),  # Include playlist name in the response
-                    "items": tracks_data.get("items", [])
-                })
+                return jsonify(formatted_response)
         else:
             return jsonify({"error": "Failed to fetch playlist data"}), 400
 

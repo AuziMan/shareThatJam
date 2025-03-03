@@ -67,7 +67,7 @@ function Header() {
   };
 
   return (
-<Navbar expand="lg" className="px-3" style={{ backgroundColor: '#253B66', color: '#F5F5F5', position: 'relative' }}>
+<Navbar expand="lg" className="px-3" style={{ backgroundColor: '#E6E6E6', color: '#F5F5F5', position: 'relative' }}>
   <Container>
         {/* Left Side: App Brand */}
         <Navbar.Brand href="/home">Share That Jam</Navbar.Brand>
@@ -83,7 +83,7 @@ function Header() {
 
             
             {/* Right Dropdown for User Playlists */}
-            <NavDropdown title="Your Playlists" style={{ backgroundColor: '#253B66', color: '#F5F5F5', position: 'relative' }} >
+            <NavDropdown title="Your Playlists" style={{ backgroundColor: '#E6E6E6', color: '#F5F5F5', position: 'relative' }} >
               {playlists.length > 0 ? (
                 playlists.map((playlist) => (
                   <NavDropdown.Item key={playlist.id} href={`/playlistTracks/${playlist.id}`}>

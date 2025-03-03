@@ -41,15 +41,31 @@ def format_response_obj(data):
     return track_info
 
 
-def format_playlist_tracks(data):
+def format_playlist_tracks(tracks_data):
     playlist_info = [
         {
-            "tracks": [data["track"]["name"] for data in data.get("items", [])],
-            "playlist_name": [data["name"]]
+            "track": track["track"]["name"],
+            "artist": track["track"]["artists"][0]["name"] if track["track"]["artists"] else "Unknown Artist",
+            "albumImg": track["track"]["album"]["images"][0]["url"] if track["track"]["album"]["images"] else "unknown image",
+            "id": track["track"]["id"]
         }
+        for track in tracks_data.get("items", [])
     ]
 
     return playlist_info
+
+# def format_response_array(data):
+#     print(data["items"][:1])
+#     track_info = [
+#         {
+#             "track": track["name"],
+#             "artist": track["artists"][0]["name"] if track["artists"] else "Unknown Artist",
+#             "albumImg": track["album"]["images"][0]["url"] if track["album"]["images"] else "unknown image",
+#             "id": track["id"]
+#         }
+#         for track in data.get("items", [])
+#     ]
+#     return track_info
 
 
 def get_user_info_from_spotify():

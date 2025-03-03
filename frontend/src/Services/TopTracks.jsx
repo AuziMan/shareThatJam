@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Container, Row, Col } from 'react-bootstrap';
+import {Container, Row, Col } from 'react-bootstrap';
 import TrackCard from '../Components/TrackCard';
 
 const TopTracks = () => {
