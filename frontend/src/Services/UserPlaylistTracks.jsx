@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import TrackCard from '../Components/TrackCard';
-import TopTracks from './TopTracks';
+import UserReccomendedTracks from './UserReccomendedTracks' 
 
 
 const UserPlaylistTracks = () => {
@@ -70,8 +70,8 @@ const UserPlaylistTracks = () => {
 
         {tracks.length === 0 ? (
                 <Alert variant="warning" className="text-center">
-                    No playlist tracks found. Displaying your top tracks instead.
-                    <TopTracks />
+                    No playlist tracks found. Displaying Reccomended Tracks Instead.
+                    <UserReccomendedTracks />
 
                 </Alert>
         ) : null}

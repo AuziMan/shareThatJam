@@ -92,11 +92,7 @@ def get_user_playlist_songs():
                 "playlistTracks": playlist_tracks
             }
 
-            if namesOnly:
-                playlist_info = format_playlist_tracks(tracks_data, playlist_data)
-                return jsonify(playlist_info)
-            else:
-                return jsonify(formatted_response)
+            return jsonify(formatted_response)
         else:
             return jsonify({"error": "Failed to fetch playlist data"}), 400
 

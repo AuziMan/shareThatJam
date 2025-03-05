@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'; // Import Link for navigation
 import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
 import NowPlayingHover from '../Components/NowPlayingHover'; // Import NowPlayingHover component
 
+
 function Header() {
   const [track, setTrack] = useState(null);
   const [playlists, setPlaylists] = useState([]); // State to store user playlists
@@ -77,7 +78,7 @@ function Header() {
             <Nav.Link href="/top-tracks">Your Top Tracks</Nav.Link>
 
             {/* Endpoint was deprecated in spotify :( HUGE L */}
-            {/* <Nav.Link href="/user-reccomended">Reccomended Tracks</Nav.Link> */}
+            <Nav.Link href="/user-reccomended">Reccomended Tracks</Nav.Link>
 
             <Nav.Link href="/">Login</Nav.Link>
 
