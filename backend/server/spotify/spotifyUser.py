@@ -100,11 +100,10 @@ def get_user_info():
     
 
 # Implement user reccomendations:
-# 1. 'https://api.spotify.com/v1/recommendations'
-# 2. Pass in top 4 track Ids from 'Top Tracks' as 'seeds'
-
-# Spotifys reccomendations endpoint was deprecated. SUCKS! :(
-
+# 1. Call Top Tracks endpoint to get the top 5 track Ids
+# 2. Call 'https://api.reccobeats.com/v1/' with the trackId as qps
+# 3. Retrive the reccomended trackIds from the 'href' field
+# 4. Format the response
 
 @user_blueprint.route('/recommendations', methods=['GET'])
 def get_reccomended_tracks():
@@ -116,14 +115,10 @@ def get_reccomended_tracks():
 
         if datetime.datetime.now().timestamp() > session['expires_at']:
             return redirect(url_for('auth.refresh_token'))
-        
-        spotify_headers = {
-            'Authorization': f"Bearer {session['access_token']}"
-        }
 
         print("calling shared func")
         track_seeds = format_user_recc_seeds()
-        print(track_seeds)
+        # print(track_seeds)
 
         # Check if track_seeds is not None and has required data
         if track_seeds:
@@ -141,23 +136,21 @@ def get_reccomended_tracks():
                 'Accept': 'application/json'
             }
 
-            # Make the API request
             response = requests.get(recommendations_url, headers=reccon_beats_headers)
             if response.status_code == 200:
-
                 reccomended_tracks = response.json()
                 reccomended_tracks_field = [track["href"] for track in reccomended_tracks.get("content", [])]
                 reccomended_track_ids = [url.split("/")[-1] for url in reccomended_tracks_field]
-                print("reccomended_track_ids", reccomended_track_ids)
+                # print("reccomended_track_ids", reccomended_track_ids)
                 reccomended_tracks_ids_list = ",".join(reccomended_track_ids)
-                print("reccomended_tracks_ids_list", reccomended_tracks_ids_list)
+                # print("reccomended_tracks_ids_list", reccomended_tracks_ids_list)
             else:
                 return jsonify("unable to get trackIds from recco")
             
             spotify_reccomended_tracks = search_tracks_by_id(reccomended_tracks_ids_list)
             print("formatting response")
             formatted_recc_tracks = format_track_search(spotify_reccomended_tracks)
-            print(formatted_recc_tracks)
+            # print(formatted_recc_tracks)
             return formatted_recc_tracks
         else:
             return jsonify({"error": "Invalid seed data, cannot generate recommendations."}), 400

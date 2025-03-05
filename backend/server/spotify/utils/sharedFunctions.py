@@ -155,7 +155,7 @@ def search_tracks_by_id(seeds):
             response = requests.get(request, headers=headers)
             if response.status_code == 200:
                 data = response.json()
-                print("data from Spotify search")
+                print("Reccomended Tracks Found")
                 return data
             else:
                 return jsonify({"error": f"Failed to fetch top tracks: {response.status_code}"}), response.status_code
