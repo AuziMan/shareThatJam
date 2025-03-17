@@ -45,7 +45,6 @@ const UserPlaylistTracks = () => {
                     '/user/topTracks',
                     {withCredentials: true}
                 );
-                console.log(response)
 
                 setTracks(response.data || []);
                 setLoading(false)
@@ -65,22 +64,22 @@ const UserPlaylistTracks = () => {
     return (
         <Container className="mt-4">
         <h1 className="text-center mb-4">
-            {tracks.length === 0 ? "Showing Your Top Tracks" : `Playlist Tracks in ${playlistName}`}
+            {tracks.length === 0 ? "No Tracks in the Playlist, Showing Reccomended Tracks!" : `Playlist Tracks in ${playlistName}`}
         </h1>
 
         {tracks.length === 0 ? (
-                <Alert variant="warning" className="text-center">
+                <div className="text-center">
                     No playlist tracks found. Displaying Reccomended Tracks Instead.
                     <UserReccomendedTracks />
 
-                </Alert>
+                </div>
         ) : null}
             <Row className="g-4">
                 {tracks.map((track, index) => (
                 <Col key={index} xs={12} sm={6} md={4} lg={3}> 
                     <TrackCard
                         key={index}
-                        trackName={track.name}
+                        trackName={track.track}
                         artistName={track.artist}
                         albumImg={track.albumImg} // Assuming the album image is at this location
                         onClick={() => console.log(`Play ${track.name}`)} // Customize play action

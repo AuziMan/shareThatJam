@@ -129,7 +129,7 @@ def get_reccomended_tracks():
                 query_params.append(f"{','.join(track_seeds['seed_tracks'])}")
             
             # Join the parameters with '&' and build the final URL
-            recommendations_url = f"{RECCO_BEATS_BASEURL}track/recommendation?size=5&seeds={query_params[0]}"
+            recommendations_url = f"{RECCO_BEATS_BASEURL}track/recommendation?size=8&seeds={query_params[0]}"
             print(f"Recommendations URL: {recommendations_url}")
             
             reccon_beats_headers = {
