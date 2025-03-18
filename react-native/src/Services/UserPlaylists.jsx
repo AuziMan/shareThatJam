@@ -1,23 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const UserPlaylists = () => {
+const UserPlaylists = ({ navigation }) => {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch playlists from Flask backend
-        axios.get('/playlist/playlists')
-            .then(response => {
-                setPlaylists(response.data.items);
+        const fetchPlaylists = async () => {
+            try {
+                // Use the full URL for your Flask backend
+                const response = await axios.get('http://192.168.0.16:4000/playlist/playlists', {
+                    headers: {
+                        // Optional: If you're using tokens directly in the React Native app
+                        'Authorization': `Bearer ${await AsyncStorage.getItem('spotifyAccessToken')}`
+                    }
+                });
+                
+                setPlaylists(response.data.items || []);
                 setLoading(false);
-            })
-            .catch(error => {
+            } catch (error) {
+                console.error('Error fetching playlists:', error);
                 setError(error);
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchPlaylists();
     }, []);
 
     if (loading) {
