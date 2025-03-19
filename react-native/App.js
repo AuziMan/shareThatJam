@@ -2,16 +2,16 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/Screens/LoginScreen';
-import UserPlaylists from './src/Services/UserPlaylists';
+import MainNavigator from './src/navigation/MainNav';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="UserPlaylists" component={UserPlaylists} options={{ title: 'Your Playlists' }} />
+        <Stack.Screen name="Main" component={MainNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

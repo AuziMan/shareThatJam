@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }) => {
                   (new Date().getTime() + (data.expires_in * 1000)).toString());
                 
                 // Navigate to UserPlaylists screen
-                navigation.navigate('UserPlaylists');
+                navigation.navigate('Main');
               }
             })
             .catch((error) => {
