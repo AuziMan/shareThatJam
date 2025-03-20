@@ -48,7 +48,7 @@ const TopTracks = () => {
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Top Tracks</Text>
+      {/* <Text style={{ fontSize: 24, textAlign: 'center',  fontWeight: 'bold', marginBottom: 20 }}>Top Tracks</Text> */}
       <FlatList
         data={topTracks}  // Using the correctly fetched topTracks array
         renderItem={({ item }) => (

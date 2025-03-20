@@ -139,7 +139,7 @@ def callback():
                 if "shareThatJam://" in redirect_uri:
                     return redirect(f"{MOBILE_REDIRECT_URI}?code={code}")
                 else:
-                    return redirect(f"{FRONTEND_BASE_URL}/home")
+                    return redirect(f"{FRONTEND_BASE_URL}/topTracks")
             
             except requests.exceptions.RequestException as e:
                 print(f"Error while exchanging token: {e}")

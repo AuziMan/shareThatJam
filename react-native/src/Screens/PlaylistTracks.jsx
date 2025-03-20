@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from '../utils/config';
 import TrackCard from '../Components/TrackCard';
 
-const PlaylistTracks = ({ route }) => {
+const PlaylistTracks = ({ route, navigation }) => {
     const { playlistId, setPlaylistId } = route.params;  // Receive playlistId and playlistName from navigation
     const [playlistTracks, setplaylistTracks] = useState([]);
     const [playlistName, setPlaylistName] = useState("");
@@ -31,7 +31,15 @@ const PlaylistTracks = ({ route }) => {
         };
 
         fetchPlaylistTracks();
-    }, [playlistId]);  // Fetch tracks when playlistId changes
+    }, [navigation, playlistId]);// Fetch tracks when playlistId changes
+
+
+    useEffect(() => {
+      // Update the screen title with the playlist name
+      navigation.setOptions({ title: playlistName });
+    }, [navigation, playlistName]);
+
+
 
     if (loading) {
         return (
@@ -51,7 +59,7 @@ const PlaylistTracks = ({ route }) => {
 
     return (
         <View style={{ flex: 1, padding: 16 }}>
-          <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>{playlistName}</Text>
+          {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>{playlistName}</Text> */}
           <FlatList
             data={playlistTracks}  // Using the correctly fetched topTracks array
             renderItem={({ item }) => (

@@ -17,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
     fetch('http://192.168.0.16:4000/auth/login')
       .then((response) => response.json())
       .then((data) => {
-        console.log("Received Spotify OAuth URL:", data.spotify_oauth_url);
+        //console.log("Received Spotify OAuth URL:", data.spotify_oauth_url);
         if (data.spotify_oauth_url) {
           setAuthUrl(data.spotify_oauth_url);
           setShowWebView(true);
@@ -35,15 +35,15 @@ const LoginScreen = ({ navigation }) => {
   
   const handleNavigationStateChange = (navState) => {
     const { url } = navState;
-    console.log('WebView navigated to:', url);
+    // console.log('WebView navigated to:', url);
 
     if (url.includes('/auth/callback')) {
-      console.log('Detected callback URL:', url);
+      // console.log('Detected callback URL:', url);
       
       try {
         const urlObj = new URL(url);
         const code = urlObj.searchParams.get('code');
-        console.log('Extracted code:', code);
+        // console.log('Extracted code:', code);
 
         if (code) {
           fetch('http://192.168.0.16:4000/auth/callback', {
@@ -53,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
           })
             .then((response) => response.json())
             .then((data) => {
-              console.log('Authentication successful:', data);
+              // console.log('Authentication successful:', data);
               setShowWebView(false);
               
               // Store auth tokens in AsyncStorage

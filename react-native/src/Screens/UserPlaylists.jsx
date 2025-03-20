@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+
 import { API_BASE_URL } from '../utils/config';
 
 const UserPlaylists = ({ navigation }) => {
@@ -9,25 +11,35 @@ const UserPlaylists = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const fetchPlaylists = async () => {
+        try {
+            const token = await AsyncStorage.getItem('spotifyAccessToken');
+            const response = await axios.get(`${API_BASE_URL}/playlist/playlists`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            setPlaylists(response.data.items || []);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching playlists:', error);
+            setError(error);
+            setLoading(false);
+        }
+    };
+
+    
+
     useEffect(() => {
-        const fetchPlaylists = async () => {
-            try {
-                const token = await AsyncStorage.getItem('spotifyAccessToken');
-                const response = await axios.get(`${API_BASE_URL}/playlist/playlists`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+        // Update the screen title with the playlist name
+        navigation.setOptions({ title: "" });
+    });
 
-                setPlaylists(response.data.items || []);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching playlists:', error);
-                setError(error);
-                setLoading(false);
-            }
-        };
-
-        fetchPlaylists();
-    }, []);
+    // Refresh when the screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            fetchPlaylists();
+        }, [])
+    );
 
     if (loading) {
         return (
@@ -63,6 +75,13 @@ const UserPlaylists = ({ navigation }) => {
                 )}
                 keyExtractor={item => item.id.toString()}
             />
+            <TouchableOpacity
+                        style={styles.playlistButton}
+                        onPress={() => {
+                            navigation.navigate('NewPlaylist');
+                        }}>
+                <Text>New Playlist</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -82,19 +101,21 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: 'white',
-        marginBottom: 16,
+        marginBottom: 46,
+        textAlign: 'center'
     },
     playlistButton: {
         backgroundColor: '#1DB954',
-        paddingVertical: 12,
+        paddingVertical: 14,
         paddingHorizontal: 20,
         borderRadius: 25,
-        marginBottom: 10,
         alignItems: 'center',
+        marginBottom: 15 // Adds spacing between buttons
+
     },
     playlistText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
     },
     errorText: {
