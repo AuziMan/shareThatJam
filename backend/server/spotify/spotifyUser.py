@@ -13,7 +13,7 @@ BASE_SPOTIFY_URL = "https://api.spotify.com/v1/me"
 SPOTIFY_URL_USER_SEARCH = "https://api.spotify.com/v1"
 RECCO_BEATS_BASEURL = "https://api.reccobeats.com/v1/"
 
-SPOTIFY_TOP_TRACKS_ENDPOINT = f"{BASE_SPOTIFY_URL}/top/tracks"
+SPOTIFY_TOP_TRACKS_ENDPOINT = f"{BASE_SPOTIFY_URL}/top/tracks?time_range=short_term"
 SPOTIFY_NOW_PLAYING_ENDPOINT = f"{BASE_SPOTIFY_URL}/player/currently-playing"
  
 

@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from '../utils/config';
+import { Menu, Divider } from 'react-native-paper'; // Import dropdown menu components
 import TrackCard from '../Components/TrackCard';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // For three-dot menu icon
+import RemovePlaylist from '../Services/RemovePlaylist'; // Import delete function
+import UserRecommendedTracks from '../Services/UserReccomendedTracks';
+
 
 const PlaylistTracks = ({ route, navigation }) => {
     const { playlistId, setPlaylistId } = route.params;  // Receive playlistId and playlistName from navigation
@@ -11,6 +16,8 @@ const PlaylistTracks = ({ route, navigation }) => {
     const [playlistName, setPlaylistName] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [menuVisible, setMenuVisible] = useState(false);
+
 
     useEffect(() => {
         const fetchPlaylistTracks = async () => {
@@ -39,6 +46,42 @@ const PlaylistTracks = ({ route, navigation }) => {
       navigation.setOptions({ title: playlistName });
     }, [navigation, playlistName]);
 
+    useEffect(() => {
+      navigation.setOptions({
+          title: playlistName,
+          headerRight: () => (
+              <Menu
+                  visible={menuVisible}
+                  onDismiss={() => setMenuVisible(false)}
+                  anchor={
+                      <TouchableOpacity onPress={() => setMenuVisible(true)} style={{ marginRight: 15 }}>
+                          <Icon name="more-vert" size={24} color="black" />
+                      </TouchableOpacity>
+                  }
+              >
+                  <Menu.Item onPress={() => console.log("Edit Playlist Pressed")} title="Edit Playlist" />
+                  <Divider />
+                  <Menu.Item onPress={handleDeletePlaylist} title="Delete Playlist" />
+                  {/* <Menu.Item onPress={handleAddToPlaylist} title="Add Songs" /> */}
+
+              </Menu>
+          ),
+      });
+  }, [navigation, playlistName, menuVisible]);
+
+
+  const handleDeletePlaylist = async () => {
+    setMenuVisible(false);
+    try {
+        await RemovePlaylist(playlistId);
+        alert("Playlist deleted successfully!");
+        navigation.goBack(); // Navigate back after deletion
+    } catch (error) {
+        alert("Failed to delete playlist.");
+    }
+  };
+
+
 
 
     if (loading) {
@@ -58,21 +101,27 @@ const PlaylistTracks = ({ route, navigation }) => {
       }
 
     return (
-        <View style={{ flex: 1, padding: 16 }}>
-          {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>{playlistName}</Text> */}
-          <FlatList
-            data={playlistTracks}  // Using the correctly fetched topTracks array
-            renderItem={({ item }) => (
-              <TrackCard
-                trackName={item.track}  // Mapping track name
-                artistName={item.artist}  // Mapping artist name
-                albumImg={item.albumImg}  // Mapping album image URL
-                onClick={() => console.log(`Play ${item.track}`)}  // Placeholder action for onClick
-              />
-            )}
-            keyExtractor={(item) => item.id}  // Use the track's id as the key
-          />
+      <View style={{ flex: 1, padding: 16 }}>
+      {playlistTracks.length === 0 ? (
+        <View style={{ flex: 1 }}>
+            <UserRecommendedTracks playlistId={playlistId} />
         </View>
+      ) : (
+          <FlatList
+              data={playlistTracks}  // Use playlistTracks if available
+              renderItem={({ item }) => (
+                  <TrackCard
+                      trackName={item.track}  // Mapping track name
+                      artistName={item.artist}  // Mapping artist name
+                      albumImg={item.albumImg}  // Mapping album image URL
+                      trackId={item.id}
+                      onClick={() => console.log(`Play ${item.track}`)}  // Placeholder action for onClick
+                  />
+              )}
+              keyExtractor={(item) => item.id}  // Use the track's id as the key
+          />
+      )}
+  </View>
       );
 };
 

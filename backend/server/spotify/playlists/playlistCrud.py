@@ -156,3 +156,95 @@ def post_create_new_album():
         # General error handler
         print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
+    
+@playlist_blueprint.route('/removePlaylist', methods=['POST'])
+def delete_remove_playlist():
+    try:
+        # Get the body of the request (expecting JSON with 'name')
+        data = request.get_json()
+        playlist_id = data.get('playlist_id')
+
+        print(f'got playlist id: {playlist_id}')
+
+        
+        # Check if the access token is in the session
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        # Ensure the token is valid (you can also have a separate function to handle expiry)
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        # Authorization header
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        endpoint = f"{SPOTIFY_URL_USER_SEARCH}/playlists/{playlist_id}/followers"
+        print(f"Playlist delete endpoint: {endpoint}, headers {headers}")
+
+        # Make the request to remove the playlist
+        response = requests.delete(endpoint, headers=headers)
+
+        if response.status_code == 200:
+            return jsonify({"message": "Playlist successfully removed"}), 200
+        else:
+            return jsonify({"error": f"Failed to remove playlist: {response.json()}"}), response.status_code
+
+    except Exception as e:
+        # General error handler
+        print(f"Error: {e}")
+        return jsonify({"error": str(e)}), 500
+    
+
+
+@playlist_blueprint.route('/addToPlaylist', methods=['POST'])
+def post_add_to_playlist():
+    try:
+        # Get the body of the request (expecting JSON with 'name')
+        data = request.get_json()
+        track_ids = data.get('uris')
+        playlist_id = data.get('playlist_id')
+
+        print(f'got song ids: {track_ids}')
+        print(f'got playlistId: {playlist_id}')
+
+        formatted_uris = [f"spotify:track:{track_id}" for track_id in track_ids]
+
+
+        requestBody = {
+            "uris": formatted_uris, #Already padded in an array
+            "position": 0
+        }
+
+        print(requestBody)
+        
+        # Check if the access token is in the session
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        # Ensure the token is valid (you can also have a separate function to handle expiry)
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        # Authorization header
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        endpoint = f"{SPOTIFY_URL_USER_SEARCH}/playlists/{playlist_id}/tracks"
+        print(f" add track endpoint: {endpoint}, headers {headers}")
+
+        # Make the request to remove the playlist
+        response = requests.post(endpoint, headers=headers, json=requestBody)
+        print(response)
+
+        if response.status_code == 201:
+            return jsonify({"message": "song successfully added"}), 201
+        else:
+            return jsonify({"error": f"Failed to add song to playlist: {response.json()}"}), response.status_code
+
+    except Exception as e:
+        # General error handler
+        print(f"Error: {e}")
+        return jsonify({"error": str(e)}), 500

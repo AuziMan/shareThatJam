@@ -3,9 +3,10 @@ import axios from 'axios';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import TrackCard from '../Components/TrackCard';
 import { API_BASE_URL } from '../utils/config';
+import AddToPlaylist from '../Services/AddToPlaylist';
 
 
-const UserRecommendedTracks = () => {
+const UserRecommendedTracks = ({ playlistId }) => {
     const [tracks, setTracks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,7 +15,7 @@ const UserRecommendedTracks = () => {
         axios.get(`${API_BASE_URL}/user/recommendations`)
             .then(response => {
                 setTracks(response.data);
-                console.log("recommendation", response);
+                // console.log("recommendation", response);
                 setLoading(false);
             })
             .catch(error => {
@@ -22,6 +23,22 @@ const UserRecommendedTracks = () => {
                 setLoading(false);
             });
     }, []);
+
+
+    const handleAddToPlaylist = async (trackUri) => {
+        console.log(`in handleAddToPlaylist with trackURI: ${trackUri}`)
+        console.log(`playist id ${playlistId}`)
+        if (!playlistId) {
+            Alert.alert("Error", "No playlist selected!");
+            return;
+        }
+        try {
+            await AddToPlaylist(playlistId, trackUri);
+            Alert.alert("Success", "Track added to playlist!");
+        } catch (error) {
+            Alert.alert("Error", "Failed to add track.");
+        }
+    };
 
     if (loading) return (
         <View style={styles.centered}>
@@ -39,17 +56,18 @@ const UserRecommendedTracks = () => {
             <Text style={styles.header}>Your Recommended Tracks</Text>
             <FlatList
                 data={tracks}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.trackContainer}>
+                renderItem={({ item }) => (                    
                         <TrackCard
-                            trackName={item.track}  // Assuming `track` is the track name
-                            artistName={item.artist}  // Assuming `artist` is the artist name
-                            albumImg={item.albumImg}  // Assuming `albumImg` is the album image URL
-                            onClick={() => console.log(`Play ${item.track}`)}  // Customize this action
+                            trackName={item.track}
+                            artistName={item.artist}
+                            albumImg={item.albumImg}
+                            trackId={item.id}
+                            onClick={() => console.log(`Play ${item.track}`)}
+                            onQueue={(id) => console.log(`Queue track: ${id}`)}
+                            onAddToPlaylist={handleAddToPlaylist}
                         />
-                    </View>
                 )}
+                keyExtractor={(item) => item.id}
             />
         </View>
     );
@@ -58,27 +76,14 @@ const UserRecommendedTracks = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
+        padding: 16
     },
     header: {
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
         marginVertical: 10,
-    },
-    trackContainer: {
-        marginVertical: 10,
-    },
-    centered: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    errorText: {
-        color: 'red',
-        fontSize: 16,
-    },
+    }
 });
 
 export default UserRecommendedTracks;
