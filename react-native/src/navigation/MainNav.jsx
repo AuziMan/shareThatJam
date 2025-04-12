@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; // Mak
 import { createStackNavigator } from '@react-navigation/stack'; // Import Stack Navigator
 import UserPlaylists from '../Screens/UserPlaylists';
 import { View } from 'react-native';
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // For three-dot menu icon
 import TopTracks from '../Screens/TopTracks';
 import PlaylistTracks from '../Screens/PlaylistTracks';
 import NewPlaylistScreen from '../Screens/NewPlaylistScreen'
@@ -27,17 +27,44 @@ function PlaylistStack() {
 // MainNavigator: Use Bottom Tab Navigator
 export default function MainNavigator() {
   return (
-    <Tab.Navigator>
-      {/* Use PlaylistStack for the Playlists tab */}
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+
+          if (route.name === 'Playlists') {
+            iconName = 'playlist-music';
+          } else if (route.name === 'NowPlaying') {
+            return <NowPlaying />; // Custom Component for the Now Playing Button
+          } else if (route.name === 'Top Tracks') {
+            iconName = 'trending-up';
+          }
+
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarShowLabel: false, // Hide labels if preferred
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'black',
+      })}
+    >
       <Tab.Screen name="Playlists" component={PlaylistStack} />
-      <Tab.Screen
-                name="NowPlaying"
-                component={View} // Placeholder
-                options={{
-                    tabBarButton: () => <NowPlaying />,
-                }}
-            />
+      <Tab.Screen name="NowPlaying" component={View} options={{ tabBarButton: () => <NowPlaying /> }} />
       <Tab.Screen name="Top Tracks" component={TopTracks} />
     </Tab.Navigator>
   );
 }
+
+// function NowPlayingNav() {
+//   return (
+//     <Tab.Navigator>
+//       {/* Use PlaylistStack for the Playlists tab */}
+//       <Tab.Screen
+//                 name="NowPlaying"
+//                 component={View} // Placeholder
+//                 options={{
+//                     tabBarButton: () => <NowPlaying />,
+//                 }}
+//             />
+//     </Tab.Navigator>
+//   );
+// }

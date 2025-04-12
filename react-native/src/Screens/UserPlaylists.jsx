@@ -80,7 +80,7 @@ const UserPlaylists = ({ navigation }) => {
                         onPress={() => {
                             navigation.navigate('NewPlaylist');
                         }}>
-                <Text>New Playlist</Text>
+                <Text style={styles.playlistText}>New Playlist</Text>
             </TouchableOpacity>
         </View>
     );
@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: '#121212',
     },
     centered: {
         flex: 1,
@@ -100,21 +99,25 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'black',
         marginBottom: 46,
         textAlign: 'center'
     },
     playlistButton: {
-        backgroundColor: '#1DB954',
+        backgroundColor: '#031D44',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
         paddingVertical: 14,
         paddingHorizontal: 20,
-        borderRadius: 25,
+        borderRadius: 5,
         alignItems: 'center',
-        marginBottom: 15 // Adds spacing between buttons
+        marginBottom: 15
 
     },
     playlistText: {
-        color: '#fff',
+        color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
     },
