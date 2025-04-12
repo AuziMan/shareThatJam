@@ -14,7 +14,7 @@ const LoginScreen = ({ navigation }) => {
     setError('');
     console.log("Fetching Spotify OAuth URL...");
   
-    fetch('http://192.168.0.16:4000/auth/login')
+    fetch('http://192.168.1.43:4000/auth/login')
       .then((response) => response.json())
       .then((data) => {
         //console.log("Received Spotify OAuth URL:", data.spotify_oauth_url);
@@ -46,7 +46,7 @@ const LoginScreen = ({ navigation }) => {
         // console.log('Extracted code:', code);
 
         if (code) {
-          fetch('http://192.168.0.16:4000/auth/callback', {
+          fetch('http://192.168.1.43:4000/auth/callback', {
             method: 'POST',
             body: JSON.stringify({ code }),
             headers: { 'Content-Type': 'application/json' },
