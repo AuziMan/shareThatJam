@@ -8,6 +8,7 @@ import TopTracks from '../Screens/TopTracks';
 import PlaylistTracks from '../Screens/PlaylistTracks';
 import NewPlaylistScreen from '../Screens/NewPlaylistScreen'
 import NowPlaying from '../Services/NowPlaying';
+import SearchScreen from '../Screens/SearchScreen';
 
 // Create the Tab and Stack navigators
 const Tab = createBottomTabNavigator();
@@ -38,6 +39,8 @@ export default function MainNavigator() {
             return <NowPlaying />; // Custom Component for the Now Playing Button
           } else if (route.name === 'Top Tracks') {
             iconName = 'trending-up';
+          } else if (route.name == 'Search Screen') {
+            iconName = 'card-search'
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -50,6 +53,8 @@ export default function MainNavigator() {
       <Tab.Screen name="Playlists" component={PlaylistStack} />
       <Tab.Screen name="NowPlaying" component={View} options={{ tabBarButton: () => <NowPlaying /> }} />
       <Tab.Screen name="Top Tracks" component={TopTracks} />
+      <Tab.Screen name="Search Screen" component={SearchScreen}/>
+
     </Tab.Navigator>
   );
 }

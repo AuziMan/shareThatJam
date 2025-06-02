@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../utils/config';
+import { API_BASE_URL } from '../../utils/config';
 
 
 // Function to remove a playlist

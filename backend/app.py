@@ -5,6 +5,7 @@ from server.spotify.spotifyUser import user_blueprint
 from server.spotify.playlists.playlistCrud import playlist_blueprint
 from server.spotify.spotifySearch import search_blueprint
 from server.spotify.utils.auth import auth_blueprint
+from server.spotify.spotifyPlayback import playback_blueprint
 
 import secrets
 
@@ -18,6 +19,8 @@ app.register_blueprint(user_blueprint, url_prefix='/user')
 app.register_blueprint(playlist_blueprint, url_prefix='/playlist')
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 app.register_blueprint(search_blueprint, url_prefix='/search')
+app.register_blueprint(playback_blueprint, url_prefix='/playback')
+
 
 
 @app.route('/')

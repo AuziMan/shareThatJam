@@ -1,4 +1,6 @@
 import React from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // For three-dot menu icon
+
 import { View, Text, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 
 const NowPlayingCard = ({ track, isVisible, onClose }) => {
@@ -17,9 +19,17 @@ const NowPlayingCard = ({ track, isVisible, onClose }) => {
               <Image source={{ uri: track.albumImg }} style={styles.albumImage} />
               <Text style={styles.trackName}>{track.track}</Text>
               <Text style={styles.artistName}>{track.artist}</Text>
-              <TouchableOpacity style={styles.closeButton}>
-                <Text style={styles.closeText} onClick={() => console.log(`Next Song`)}>Next</Text>
-              </TouchableOpacity>
+                <View style={styles.controls}>
+                  <TouchableOpacity style={styles.buttonControls} onPress={() => console.log('skip-backward Pressed!')}>
+                    <Icon name="skip-previous" size="50" />              
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.buttonControls} onPress={() => console.log('pause Pressed!')}>
+                    <Icon name="pause-circle" size="65" />              
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.buttonControls} onPress={() => console.log('skip-forward Pressed!')}>
+                    <Icon name="skip-next" size="50" />              
+                  </TouchableOpacity>
+              </View>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -49,19 +59,24 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   trackName: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   artistName: {
-    fontSize: 16,
+    fontSize: 18,
     color: 'gray',
     marginBottom: 15,
   },
-  closeButton: {
-    padding: 10,
-    backgroundColor: '#1DB954', // Spotify green
-    borderRadius: 5,
+  controls:{
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  buttonControls: {
+    marginHorizontal: 10,
+    borderRadius: 5
   },
   closeText: {
     color: '#fff',

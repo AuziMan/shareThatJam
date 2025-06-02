@@ -25,7 +25,7 @@ TOKEN_URL = "https://accounts.spotify.com/api/token"
 @auth_blueprint.route('/login')
 def login():
     print(session)  # This will print session data in the console
-    scope = 'user-read-private user-read-email user-top-read user-read-currently-playing playlist-modify-public playlist-modify-private'
+    scope = 'user-read-private user-read-email user-top-read user-read-currently-playing playlist-modify-public playlist-modify-private user-read-playback-state'
 
     params = {
         'client_id': SPOTIFY_CID,

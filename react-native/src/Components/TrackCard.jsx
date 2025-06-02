@@ -28,7 +28,7 @@ const TrackCard = ({ trackName, artistName, albumImg, onClick, trackId, onQueue,
 
                 <TouchableOpacity 
                     onPress={() => {
-                        console.log("🎵 Track being added:", trackId);
+                        // console.log("🎵 Track being added:", trackId);
                         onAddToPlaylist(trackId);}} 
                     style={[styles.iconButton, styles.addButton]}
                 >

@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { View, Button, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '../utils/config';
+import axios from 'axios';
+import { getPlaybackState, getPlaybackData } from '../utils/PlaybackServices';
+
+
 
 const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +19,7 @@ const LoginScreen = ({ navigation }) => {
     setError('');
     console.log("Fetching Spotify OAuth URL...");
   
-    fetch('http://192.168.1.43:4000/auth/login')
+    fetch(`${API_BASE_URL}/auth/login`)
       .then((response) => response.json())
       .then((data) => {
         //console.log("Received Spotify OAuth URL:", data.spotify_oauth_url);
@@ -33,6 +38,7 @@ const LoginScreen = ({ navigation }) => {
       });
   };
   
+  
   const handleNavigationStateChange = (navState) => {
     const { url } = navState;
     // console.log('WebView navigated to:', url);
@@ -46,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
         // console.log('Extracted code:', code);
 
         if (code) {
-          fetch('http://192.168.1.43:4000/auth/callback', {
+          fetch(`${API_BASE_URL}/auth/callback`, {
             method: 'POST',
             body: JSON.stringify({ code }),
             headers: { 'Content-Type': 'application/json' },
@@ -62,8 +68,12 @@ const LoginScreen = ({ navigation }) => {
                 AsyncStorage.setItem('spotifyRefreshToken', data.refresh_token);
                 AsyncStorage.setItem('spotifyExpiresAt', 
                   (new Date().getTime() + (data.expires_in * 1000)).toString());
-                
-                // Navigate to UserPlaylists screen
+
+                // Get Playback State
+                getPlaybackState();
+
+                getPlaybackData();
+                 // Navigate to UserPlaylists screen
                 navigation.navigate('Main');
               }
             })
@@ -83,7 +93,7 @@ const LoginScreen = ({ navigation }) => {
     <View style={styles.container}>
       {!showWebView ? (
         <View style={styles.loginContainer}>
-          <Button title="Login with Spotify" onPress={handleLogin} disabled={isLoading} />
+          <Button title="Login with Spotify Here" onPress={handleLogin} disabled={isLoading} />
           {isLoading && <ActivityIndicator size="large" style={styles.loader} />}
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
         </View>

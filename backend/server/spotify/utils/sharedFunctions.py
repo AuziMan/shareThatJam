@@ -64,6 +64,15 @@ def format_playlist_tracks(tracks_data):
 
     return playlist_info
 
+def get_playback_info(playback_data):
+    playback_info = {
+            "device_id": playback_data["device"]["id"],
+            "device_name": playback_data["device"]["name"],
+            "is_active": playback_data["device"]["is_active"]
+        }
+    
+    return playback_info
+
 # def format_response_array(data):
 #     print(data["items"][:1])
 #     track_info = [
@@ -164,3 +173,4 @@ def search_tracks_by_id(seeds):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    

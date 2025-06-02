@@ -29,7 +29,7 @@ export const login = async () => {
       throw error;
     }
   };
-  
+
 
 // Function to store the access token
 export const storeToken = async (token) => {

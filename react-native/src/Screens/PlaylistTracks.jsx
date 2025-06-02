@@ -6,7 +6,7 @@ import { API_BASE_URL } from '../utils/config';
 import { Menu, Divider } from 'react-native-paper'; // Import dropdown menu components
 import TrackCard from '../Components/TrackCard';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // For three-dot menu icon
-import RemovePlaylist from '../Services/RemovePlaylist'; // Import delete function
+import RemovePlaylist from '../Services/playlist-crud/RemovePlaylist';
 import UserRecommendedTracks from '../Services/UserReccomendedTracks';
 
 

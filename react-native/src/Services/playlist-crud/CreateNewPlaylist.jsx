@@ -1,6 +1,5 @@
-// services/CreateNewPlaylist.js
 import axios from 'axios';
-import { API_BASE_URL } from '../utils/config';
+import { API_BASE_URL } from '../../utils/config';
 
 
 // Function to create a new playlist
@@ -13,5 +12,3 @@ export const CreateNewPlaylist = async (playlistName) => {
     throw error; // Rethrow the error to handle it elsewhere
   }
 };
-
-export default CreateNewPlaylist

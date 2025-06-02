@@ -3,8 +3,7 @@ import axios from 'axios';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import TrackCard from '../Components/TrackCard';
 import { API_BASE_URL } from '../utils/config';
-import AddToPlaylist from '../Services/AddToPlaylist';
-
+import AddToPlaylist from './playlist-crud/AddToPlaylist';
 
 const UserRecommendedTracks = ({ playlistId }) => {
     const [tracks, setTracks] = useState([]);

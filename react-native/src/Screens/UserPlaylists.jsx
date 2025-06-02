@@ -1,10 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import axios from 'axios';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
-
-import { API_BASE_URL } from '../utils/config';
+import { getPlaylists } from '../Services/playlist-crud/GetPlaylists'
 
 const UserPlaylists = ({ navigation }) => {
     const [playlists, setPlaylists] = useState([]);
@@ -12,19 +9,13 @@ const UserPlaylists = ({ navigation }) => {
     const [error, setError] = useState(null);
 
     const fetchPlaylists = async () => {
-        try {
-            const token = await AsyncStorage.getItem('spotifyAccessToken');
-            const response = await axios.get(`${API_BASE_URL}/playlist/playlists`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            setPlaylists(response.data.items || []);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching playlists:', error);
-            setError(error);
-            setLoading(false);
-        }
+       const { data, error } = await getPlaylists();
+       if(error){
+        setError(error)
+       } else{
+        setPlaylists(data)
+       }
+       setLoading(false) 
     };
 
     

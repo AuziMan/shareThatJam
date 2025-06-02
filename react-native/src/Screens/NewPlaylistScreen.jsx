@@ -1,7 +1,8 @@
 // pages/CreatePlaylistPage.jsx
 import React, { useState } from 'react';
-import { CreateNewPlaylist } from '../Services/CreateNewPlaylist'; // Import the service
-import {StyleSheet, TextInput, SafeAreaProvider, SafeAreaView, Button, View, Text } from 'react-native';
+import { StyleSheet, TextInput, SafeAreaProvider, SafeAreaView, Button, View, Text } from 'react-native';
+import { CreateNewPlaylist } from '../Services/playlist-crud/CreateNewPlaylist'; 
+
 
 
 function NewPlaylistScreen( {navigation} ) {
