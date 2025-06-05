@@ -3,7 +3,7 @@ from flask import Flask, jsonify, redirect, url_for, request, Blueprint, session
 from dotenv import load_dotenv
 import requests
 import json
-from server.spotify.utils.sharedFunctions import format_response_array, format_response_obj, format_user_recc_seeds, search_tracks_by_id, format_track_search, get_playback_info
+from server.spotify.utils.sharedFunctions import get_playback_info
 
 
 playback_blueprint = Blueprint("playback", __name__)
@@ -32,7 +32,7 @@ def get_playback_state():
         response = requests.get(SPOTIFY_PLAYER_ENDPOINT, headers=headers)
 
         if response.status_code == 200:
-            print(response.json())
+            # print(response.json())
             return jsonify(response.json())
         else:
             return jsonify({"error": f"Failed to fetch playback data: {response.status_code}"}), response.status_code
@@ -58,7 +58,7 @@ def get_playback_device():
         
         if response.status_code == 200:
             playback_raw_data = response.json()
-            print(f'playback raw data: {playback_raw_data}')
+            # print(f'playback raw data: {playback_raw_data}')
             playback_info = get_playback_info(playback_raw_data)
             print(f'formatted playback info {playback_info}')
             return playback_info

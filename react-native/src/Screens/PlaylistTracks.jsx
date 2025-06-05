@@ -118,7 +118,7 @@ const PlaylistTracks = ({ route, navigation }) => {
                       onClick={() => console.log(`Play ${item.track}`)}  // Placeholder action for onClick
                   />
               )}
-              keyExtractor={(item) => item.id}  // Use the track's id as the key
+              keyExtractor={(item, index) => `${item.id}-${index}`}
           />
       )}
   </View>

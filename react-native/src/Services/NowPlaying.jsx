@@ -3,18 +3,23 @@ import { View, Text, Image, TouchableOpacity, ActivityIndicator, StyleSheet } fr
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/config';
 import NowPlayingCard from '../Components/NowPlayingCard';
+import { getPlaybackData } from '../utils/Playback/PlaybackServices';
 
 const NowPlaying = () => {
     const [track, setTrack] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [playbackData, setPlaybackData] = useState(null);
 
     useEffect(() => {
         const fetchNowPlaying = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/user/nowPlaying`);
-                setTrack(response.data.length > 0 ? response.data[0] : null);
+                const nowPlayingData = await axios.get(`${API_BASE_URL}/user/nowPlaying`);
+                setTrack(nowPlayingData.data.length > 0 ? nowPlayingData.data[0] : null);
+                const playbackData = await getPlaybackData();
+                console.log("",playbackData)
+                setPlaybackData(playbackData);
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching now playing:", error);
@@ -41,11 +46,16 @@ const NowPlaying = () => {
         );
     }
 
-    if (!track || !track.track || !track.artist || !track.albumImg) {
+    if (!track || !track.track || !track.artist || !track.albumImg || !playbackData.trackId) {
         return (
-            <View style={styles.messageContainer}>
-                <Text style={styles.noTrackText}>No Track Playing</Text>
-            </View>
+            <>
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.nowPlayingContainer}>
+                <Text style={styles.noTrackText}>Error fetching track</Text>
+            </TouchableOpacity>
+
+            {/* Now Playing Modal */}
+            <NowPlayingCard track={track} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+        </>
         );
     }
 
@@ -56,7 +66,7 @@ const NowPlaying = () => {
             </TouchableOpacity>
 
             {/* Now Playing Modal */}
-            <NowPlayingCard track={track} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+            <NowPlayingCard track={track} playbackData={playbackData} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
         </>
     );
 };

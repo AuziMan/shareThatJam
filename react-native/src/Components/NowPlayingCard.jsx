@@ -2,13 +2,24 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // For three-dot menu icon
 
 import { View, Text, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { pausePlayback, playPlayback } from '../utils/Playback/PlaybackServices';
 
-const NowPlayingCard = ({ track, isVisible, onClose }) => {
+const NowPlayingCard = ({ track, isVisible, onClose, playbackData }) => {
   if (!track) {
     return (
-        <Text style={styles.trackName}>No Track Playing</Text>
-    ); 
+      <Text style={styles.trackName}>No Track Playing</Text>
+    );
   }
+
+  const handlePlayPause = () => {
+    if (playbackData.isPlaying) {
+      pausePlayback();
+    } else if (playbackData.trackId) {
+      playPlayback(playbackData.trackId);
+    } else {
+      console.warn('Track ID missing — cannot start playback');
+    }
+  };
 
   return (
     <Modal visible={isVisible} transparent animationType="slide">
@@ -19,16 +30,31 @@ const NowPlayingCard = ({ track, isVisible, onClose }) => {
               <Image source={{ uri: track.albumImg }} style={styles.albumImage} />
               <Text style={styles.trackName}>{track.track}</Text>
               <Text style={styles.artistName}>{track.artist}</Text>
-                <View style={styles.controls}>
-                  <TouchableOpacity style={styles.buttonControls} onPress={() => console.log('skip-backward Pressed!')}>
-                    <Icon name="skip-previous" size="50" />              
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.buttonControls} onPress={() => console.log('pause Pressed!')}>
-                    <Icon name="pause-circle" size="65" />              
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.buttonControls} onPress={() => console.log('skip-forward Pressed!')}>
-                    <Icon name="skip-next" size="50" />              
-                  </TouchableOpacity>
+              
+              <View style={styles.controls}>
+                <TouchableOpacity
+                  style={styles.buttonControls}
+                  onPress={() => console.log('skip-backward Pressed!')}
+                >
+                  <Icon name="skip-previous" size={50} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.buttonControls}
+                  onPress={handlePlayPause}
+                >
+                  <Icon
+                    name={track.is_playing ? 'pause-circle' : 'play-circle'}
+                    size={65}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.buttonControls}
+                  onPress={() => console.log('skip-forward Pressed!')}
+                >
+                  <Icon name="skip-next" size={50} />
+                </TouchableOpacity>
               </View>
             </View>
           </TouchableWithoutFeedback>

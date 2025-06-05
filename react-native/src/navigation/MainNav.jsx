@@ -9,6 +9,7 @@ import PlaylistTracks from '../Screens/PlaylistTracks';
 import NewPlaylistScreen from '../Screens/NewPlaylistScreen'
 import NowPlaying from '../Services/NowPlaying';
 import SearchScreen from '../Screens/SearchScreen';
+import NowPlayingMonitor from '../utils/Playback/PlaybackMonitor';
 
 // Create the Tab and Stack navigators
 const Tab = createBottomTabNavigator();
@@ -28,34 +29,37 @@ function PlaylistStack() {
 // MainNavigator: Use Bottom Tab Navigator
 export default function MainNavigator() {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
+    <>
+      <NowPlayingMonitor/>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let iconName;
 
-          if (route.name === 'Playlists') {
-            iconName = 'playlist-music';
-          } else if (route.name === 'NowPlaying') {
-            return <NowPlaying />; // Custom Component for the Now Playing Button
-          } else if (route.name === 'Top Tracks') {
-            iconName = 'trending-up';
-          } else if (route.name == 'Search Screen') {
-            iconName = 'card-search'
-          }
+            if (route.name === 'Playlists') {
+              iconName = 'playlist-music';
+            } else if (route.name === 'NowPlaying') {
+              return <NowPlaying />; // Custom Component for the Now Playing Button
+            } else if (route.name === 'Top Tracks') {
+              iconName = 'trending-up';
+            } else if (route.name == 'Search Screen') {
+              iconName = 'card-search'
+            }
 
-          return <Icon name={iconName} size={size} color={color} />;
-        },
-        tabBarShowLabel: false, // Hide labels if preferred
-        tabBarActiveTintColor: 'black',
-        tabBarInactiveTintColor: 'black',
-      })}
-    >
-      <Tab.Screen name="Playlists" component={PlaylistStack} />
-      <Tab.Screen name="NowPlaying" component={View} options={{ tabBarButton: () => <NowPlaying /> }} />
-      <Tab.Screen name="Top Tracks" component={TopTracks} />
-      <Tab.Screen name="Search Screen" component={SearchScreen}/>
+            return <Icon name={iconName} size={size} color={color} />;
+          },
+          tabBarShowLabel: false, // Hide labels if preferred
+          tabBarActiveTintColor: 'black',
+          tabBarInactiveTintColor: 'black',
+        })}
+      >
+        <Tab.Screen name="Playlists" component={PlaylistStack} />
+        <Tab.Screen name="NowPlaying" component={View} options={{ tabBarButton: () => <NowPlaying /> }} />
+        <Tab.Screen name="Top Tracks" component={TopTracks} />
+        <Tab.Screen name="Search Screen" component={SearchScreen}/>
 
-    </Tab.Navigator>
+      </Tab.Navigator>
+    </>
   );
 }
 

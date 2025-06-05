@@ -4,6 +4,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from '../utils/config';
 import TrackCard from '../Components/TrackCard';
+import { playPlayback } from '../utils/Playback/PlaybackServices';
 
 const TopTracks = () => {
   const [topTracks, setTopTracks] = useState([]);
@@ -56,7 +57,9 @@ const TopTracks = () => {
             trackName={item.track}  // Mapping track name
             artistName={item.artist}  // Mapping artist name
             albumImg={item.albumImg}  // Mapping album image URL
-            onClick={() => console.log(`Play ${item.track}`)}  // Placeholder action for onClick
+            // onClick={() => console.log(item.id)}  // Placeholder action for onClick
+
+            onClick={() => playPlayback(item.id)}  // Placeholder action for onClick
           />
         )}
         keyExtractor={(item) => item.id}  // Use the track's id as the key
