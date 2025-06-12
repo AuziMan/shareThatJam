@@ -19,7 +19,6 @@ const TopTracks = () => {
             'Authorization': `Bearer ${await AsyncStorage.getItem('spotifyAccessToken')}`,
           },
         });
-        console.log(response)
         setTopTracks(response.data || []);
         setLoading(false);
       } catch (err) {

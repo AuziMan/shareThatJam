@@ -8,6 +8,7 @@ import TrackCard from '../Components/TrackCard';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // For three-dot menu icon
 import RemovePlaylist from '../Services/playlist-crud/RemovePlaylist';
 import UserRecommendedTracks from '../Services/UserReccomendedTracks';
+import { playPlayback } from '../utils/Playback/PlaybackServices';
 
 
 const PlaylistTracks = ({ route, navigation }) => {
@@ -115,7 +116,7 @@ const PlaylistTracks = ({ route, navigation }) => {
                       artistName={item.artist}  // Mapping artist name
                       albumImg={item.albumImg}  // Mapping album image URL
                       trackId={item.id}
-                      onClick={() => console.log(`Play ${item.track}`)}  // Placeholder action for onClick
+                      onClick={() => playPlayback(item.id)}  // Placeholder action for onClick
                   />
               )}
               keyExtractor={(item, index) => `${item.id}-${index}`}

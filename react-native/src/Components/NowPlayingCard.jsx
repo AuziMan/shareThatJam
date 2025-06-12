@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // For thre
 import { View, Text, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { pausePlayback, playPlayback } from '../utils/Playback/PlaybackServices';
 
-const NowPlayingCard = ({ track, isVisible, onClose, playbackData }) => {
+const NowPlayingCard = ({ track, isVisible, onClose, playbackData = {} }) => {
   if (!track) {
     return (
       <Text style={styles.trackName}>No Track Playing</Text>
@@ -16,6 +16,8 @@ const NowPlayingCard = ({ track, isVisible, onClose, playbackData }) => {
       pausePlayback();
     } else if (playbackData.trackId) {
       playPlayback(playbackData.trackId);
+      console.log("trackId from hanldePlayPause", playbackData.trackId)
+      console.log(playbackData.trackId)
     } else {
       console.warn('Track ID missing — cannot start playback');
     }
@@ -44,7 +46,7 @@ const NowPlayingCard = ({ track, isVisible, onClose, playbackData }) => {
                   onPress={handlePlayPause}
                 >
                   <Icon
-                    name={track.is_playing ? 'pause-circle' : 'play-circle'}
+                    name={playbackData.isPlaying ? 'pause-circle' : 'play-circle'}
                     size={65}
                   />
                 </TouchableOpacity>

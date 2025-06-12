@@ -18,7 +18,7 @@ const NowPlaying = () => {
                 const nowPlayingData = await axios.get(`${API_BASE_URL}/user/nowPlaying`);
                 setTrack(nowPlayingData.data.length > 0 ? nowPlayingData.data[0] : null);
                 const playbackData = await getPlaybackData();
-                console.log("",playbackData)
+                // console.log("playback data from NowPlaying.jsx",playbackData)
                 setPlaybackData(playbackData);
                 setLoading(false);
             } catch (error) {
@@ -45,8 +45,9 @@ const NowPlaying = () => {
             </View>
         );
     }
-
-    if (!track || !track.track || !track.artist || !track.albumImg || !playbackData.trackId) {
+ 
+    if (!track || !track.track || !track.artist || !track.albumImg || !playbackData.trackId || !playbackData.isPlaying
+) {
         return (
             <>
             <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.nowPlayingContainer}>
@@ -54,7 +55,7 @@ const NowPlaying = () => {
             </TouchableOpacity>
 
             {/* Now Playing Modal */}
-            <NowPlayingCard track={track} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+            <NowPlayingCard track={track} playbackData={playbackData} isVisible={modalVisible} onClose={() => setModalVisible(false)} />
         </>
         );
     }

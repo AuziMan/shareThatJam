@@ -25,13 +25,76 @@ export const getPlaybackState = async () => {
 export const getPlaybackData = async () => {
   try {
     const token = await AsyncStorage.getItem('spotifyAccessToken');
-    const response = await axios.get(`${API_BASE_URL}/playback/device`, {
+    const device_id = await AsyncStorage.getItem('device_id');
+
+    let response = await axios.get(`${API_BASE_URL}/playback/device?deviceId=${device_id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    if (!response.data) {
-      console.log("No playback data");
-      const returnData =  {
+    // If playback data is missing or empty, try transferring playback to the device
+    if (!response.data || Object.keys(response.data).length === 0) {
+      console.log('No playback data from server. Attempting to wake device...');
+
+      if (device_id) {
+        try {
+          await axios.put(`${API_BASE_URL}/playback/transfer`, {
+            "device_ids": [device_id],
+            play: false, // wake device, don't auto-play
+          }, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          // Retry fetching playback data
+          response = await axios.get(`${API_BASE_URL}/playback/device?deviceId=${device_id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.data || Object.keys(response.data).length === 0) {
+            throw new Error('No playback data after transfer attempt.');
+          }
+        } catch (transferErr) {
+          console.error('Failed to transfer playback:', transferErr);
+        }
+      }
+    }
+
+    // If playback data is now available
+    if (response.data && Object.keys(response.data).length > 0) {
+      const { device_id: newDeviceId, is_playing, track, track_id, artist, albumImg, is_restricted } = response.data;
+
+      const playbackData = {
+        isPlaying: is_playing ?? false,
+        device_id: newDeviceId,
+        is_restricted,
+        track,
+        trackId: track_id,
+        artist,
+        albumImg,
+      };
+
+      await storeDeviceId(newDeviceId);
+      await storePlaybackData(playbackData);
+
+      return playbackData;
+    }
+
+    // Fallback to cached data
+    console.log('Falling back to cached playback data.');
+    const cachedData = await getPlaybackDataFromStorage();
+
+    return cachedData ?? {
+      isPlaying: false,
+      device_id: device_id ?? null,
+      track: null,
+      trackId: null,
+      artist: null,
+      albumImg: null,
+    };
+  } catch (error) {
+    console.error('Error fetching playback data:', error);
+
+    const fallbackData =
+      (await getPlaybackDataFromStorage()) ?? {
         isPlaying: false,
         device_id: null,
         track: null,
@@ -39,39 +102,8 @@ export const getPlaybackData = async () => {
         artist: null,
         albumImg: null,
       };
-      console.log(returnData)
-      return(returnData)
-    } else {
-      const { device_id, is_playing, track, track_id, artist, albumImg, is_restricted } = response.data;
 
-      await storeDeviceId(device_id);
-
-      const returnData = {
-        isPlaying: is_playing ?? false,         
-        device_id,
-        is_restricted,
-        track,
-        trackId: track_id,
-        artist,
-        albumImg,
-      };
-      console.log(returnData)
-      return(returnData)
-    }
-  } catch (error) {
-    console.log('Error fetching playback data:', error);
-    returnData = {
-      isPlaying: false,
-      is_restricted,
-      device_id: null,
-      track: null,
-      trackId: null,
-      artist: null,
-      albumImg: null,
-    };
-    console.log('Error fetching playback data:', error);
-    return returnData;
-
+    return fallbackData;
   }
 };
 
@@ -134,6 +166,32 @@ export const playPlayback = async (trackId) => {
 
 
 
+
+export const storePlaybackData = async (playbackData) => {
+  try {
+    if (!playbackData || typeof playbackData !== 'object') {
+      console.warn('Invalid playback data — skipping storage.');
+      return;
+    }
+
+    const jsonValue = JSON.stringify(playbackData);
+    await AsyncStorage.setItem('playback_data', jsonValue);
+  } catch (error) {
+    console.error('Error storing playback data:', error);
+  }
+};
+
+
+export const getPlaybackDataFromStorage = async () => {
+  try {
+    const dataStr = await AsyncStorage.getItem("playback_data");
+    if (!dataStr) return null;
+    return JSON.parse(dataStr);
+  } catch (e) {
+    console.error("Error parsing playback_data from storage:", e);
+    return null;
+  }
+};
 
 
 // Function to store the access token

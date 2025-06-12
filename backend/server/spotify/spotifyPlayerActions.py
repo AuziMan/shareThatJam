@@ -81,7 +81,7 @@ def put_play_track():
 
         print("data:", json.dumps(body))
 
-        print(request_to_curl("PUT", f"{BASE_SPOTIFY_URL}/play", headers=headers, params=params, json_body=body))
+        print(request_to_curl("PUT", f"{SPOTIFY_PLAYER_ENDPOINT}/play", headers=headers, params=params, json_body=body))
         # Send request to Spotify API
         response = requests.put(
             f"{SPOTIFY_PLAYER_ENDPOINT}/play",

@@ -24,12 +24,6 @@ app.register_blueprint(search_blueprint, url_prefix='/search')
 app.register_blueprint(playback_blueprint, url_prefix='/playback')
 app.register_blueprint(player_blueprint, url_prefix='/player')
 
-print(app.url_map)
-
-
-
-
-
 @app.route('/')
 def home():
     return "Spotify home page <a href='auth/login'>Login with spotify</a> Now Playing <a href='user/nowPlaying'>Now Playing</a>"
