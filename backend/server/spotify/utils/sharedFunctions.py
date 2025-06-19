@@ -25,6 +25,19 @@ def format_response_array(data):
     ]
     return track_info
 
+# Queue formatting
+def format_queue_response(data):
+    queue_info = [
+        {
+            "track": track["name"],
+            "artist": track["artists"][0]["name"] if track["artists"] else "Unknown Artist",
+            "albumImg": track["album"]["images"][0]["url"] if track["album"]["images"] else "unknown image",
+            "id": track["id"]
+        }
+        for track in data.get("queue", [])
+    ]
+    return queue_info
+
 
 def format_track_search(data):
     track_info = [

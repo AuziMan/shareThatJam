@@ -1,8 +1,10 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // For three-dot menu icon
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 
 import { View, Text, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { pausePlayback, playPlayback } from '../utils/Playback/PlaybackServices';
+import QueueScreen from '../Screens/QueueScreen';
 
 const NowPlayingCard = ({ track, isVisible, onClose, playbackData = {} }) => {
   if (!track) {
@@ -22,6 +24,11 @@ const NowPlayingCard = ({ track, isVisible, onClose, playbackData = {} }) => {
       console.warn('Track ID missing — cannot start playback');
     }
   };
+
+  const handleQueuePress = (navigation) => {
+    console.log("queue button pressed")
+    navigation.navigate('QueueScreen')
+  }
 
   return (
     <Modal visible={isVisible} transparent animationType="slide">

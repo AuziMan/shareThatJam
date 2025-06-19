@@ -10,6 +10,7 @@ import NewPlaylistScreen from '../Screens/NewPlaylistScreen'
 import NowPlaying from '../Services/NowPlaying';
 import SearchScreen from '../Screens/SearchScreen';
 import NowPlayingMonitor from '../utils/Playback/PlaybackMonitor';
+import QueueScreen from '../Screens/QueueScreen';
 
 // Create the Tab and Stack navigators
 const Tab = createBottomTabNavigator();
@@ -22,6 +23,7 @@ function PlaylistStack() {
       <Stack.Screen name="UserPlaylists" component={UserPlaylists} />
       <Stack.Screen name="PlaylistTracks" component={PlaylistTracks} />
       <Stack.Screen name="NewPlaylist" component={NewPlaylistScreen} />
+      <Stack.Screen name="QueueScreen" component={QueueScreen} />
     </Stack.Navigator>
   );
 }
@@ -37,13 +39,15 @@ export default function MainNavigator() {
             let iconName;
 
             if (route.name === 'Playlists') {
-              iconName = 'playlist-music';
+              iconName = 'folder-music';
             } else if (route.name === 'NowPlaying') {
               return <NowPlaying />; // Custom Component for the Now Playing Button
             } else if (route.name === 'Top Tracks') {
               iconName = 'trending-up';
             } else if (route.name == 'Search Screen') {
               iconName = 'card-search'
+            } else if (route.name == 'Queue Screen') {
+              iconName = 'playlist-music'
             }
 
             return <Icon name={iconName} size={size} color={color} />;
@@ -57,6 +61,8 @@ export default function MainNavigator() {
         <Tab.Screen name="NowPlaying" component={View} options={{ tabBarButton: () => <NowPlaying /> }} />
         <Tab.Screen name="Top Tracks" component={TopTracks} />
         <Tab.Screen name="Search Screen" component={SearchScreen}/>
+        <Tab.Screen name="Queue Screen" component={QueueScreen} onPress={() => console.log("test")}/>
+
 
       </Tab.Navigator>
     </>

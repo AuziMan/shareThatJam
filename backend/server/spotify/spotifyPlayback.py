@@ -3,7 +3,7 @@ from flask import Flask, jsonify, redirect, url_for, request, Blueprint, session
 from dotenv import load_dotenv
 import requests
 import json
-from server.spotify.utils.sharedFunctions import get_playback_info
+from server.spotify.utils.sharedFunctions import get_playback_info, format_queue_response
 
 
 playback_blueprint = Blueprint("playback", __name__)
@@ -99,3 +99,37 @@ def put_transfer_playback_device():
             return jsonify({"error": f"Playback device not transfered: {response.status_code}"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+# get Player Queue
+@playback_blueprint.route('/queue', methods=['GET'])
+def get_playback_queue():
+    try:
+
+        print("queue endpoint hit")
+
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        response = requests.get(f"{SPOTIFY_PLAYER_ENDPOINT}/queue", headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            track_info = format_queue_response(data)
+            print("Formatted queue data:", json.dumps(track_info, indent=2))  # for readable output
+            return jsonify(track_info)        
+        else:
+            return jsonify({"error": f"Failed to get playback queue: {response.status_code}"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+    
+    
