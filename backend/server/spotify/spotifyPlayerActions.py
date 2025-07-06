@@ -98,5 +98,37 @@ def put_play_track():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+  
+# Next Track
+@player_blueprint.route('/next', methods=['POST'])
+def post_next_track():
+    try:
+
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        device_id = request.args.get('deviceId')
+
+        params = {}
+        if device_id:
+            params['device_id'] = device_id
+        print(params)
+
+        response = requests.post(f"{SPOTIFY_PLAYER_ENDPOINT}/next", headers=headers, params=params)
+
+        if response.status_code == 204:
+            return jsonify({'message': 'Next Track Requested'}), 204
+        else:
+            return jsonify({"error": f"Failed to play next track: {response.status_code}"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
     
     

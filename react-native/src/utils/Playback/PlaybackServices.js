@@ -165,6 +165,34 @@ export const playPlayback = async (trackId) => {
 };
 
 
+export const nextPlayback = async () => {
+  try {
+    const token = await AsyncStorage.getItem('spotifyAccessToken');
+    const deviceId = await AsyncStorage.getItem('device_id');
+    console.log("next playback pressed")
+
+    if (!deviceId) {
+      console.warn('No device ID found in storage.');
+      return;
+    }
+
+    // Prepare query params with deviceId
+    let url = `${API_BASE_URL}/player/next?deviceId=${deviceId}`;
+
+    const response = await axios.post(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (response.status === 200) {
+      console.log('next track requested');
+    } else {
+      console.warn('Play request returned:', response.status);
+    }
+  } catch (error) {
+    console.log('Error starting playback:', error);
+  }
+};
+
 
 
 export const storePlaybackData = async (playbackData) => {

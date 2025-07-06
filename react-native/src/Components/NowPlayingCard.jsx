@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // For thre
 import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 
 import { View, Text, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, StyleSheet } from 'react-native';
-import { pausePlayback, playPlayback } from '../utils/Playback/PlaybackServices';
+import { pausePlayback, playPlayback, nextPlayback } from '../utils/Playback/PlaybackServices';
 import QueueScreen from '../Screens/QueueScreen';
 
 const NowPlayingCard = ({ track, isVisible, onClose, playbackData = {} }) => {
@@ -60,7 +60,7 @@ const NowPlayingCard = ({ track, isVisible, onClose, playbackData = {} }) => {
 
                 <TouchableOpacity
                   style={styles.buttonControls}
-                  onPress={() => console.log('skip-forward Pressed!')}
+                  onPress={nextPlayback}
                 >
                   <Icon name="skip-next" size={50} />
                 </TouchableOpacity>

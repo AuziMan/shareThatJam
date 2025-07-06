@@ -123,7 +123,7 @@ def get_playback_queue():
         if response.status_code == 200:
             data = response.json()
             track_info = format_queue_response(data)
-            print("Formatted queue data:", json.dumps(track_info, indent=2))  # for readable output
+            # print("Formatted queue data:", json.dumps(track_info, indent=2))  # for readable output
             return jsonify(track_info)        
         else:
             return jsonify({"error": f"Failed to get playback queue: {response.status_code}"}), response.status_code
