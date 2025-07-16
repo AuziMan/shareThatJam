@@ -8,6 +8,15 @@ import { useFocusEffect } from '@react-navigation/native';
 import { playPlayback } from '../utils/Playback/PlaybackServices';
 
 
+function shuffleArray(array) {
+  const shuffled = [...array]; // Copy the array to avoid mutating original
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap
+  }
+  return shuffled;
+}
+
 
 const QueueScreen = () => {
   const [queueTracks, setQueueTracks] = useState([]);
@@ -17,13 +26,31 @@ const QueueScreen = () => {
   const fetchPlaybackQueue = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/playback/queue`, {
+      const queue = await axios.get(`${API_BASE_URL}/playback/queue`, {
         headers: {
           'Authorization': `Bearer ${await AsyncStorage.getItem('spotifyAccessToken')}`,
         },
       });
-      console.log("Fetched queue:", response.data);
-      setQueueTracks(response.data || []);
+      // console.log("Fetched queue:", queue.data);
+
+      const queueIds = queue.data.slice(0, 3).map(track => track.id);
+
+      const uniqueIds = new Set(queueIds);
+
+      if (uniqueIds.size === 3) {
+        console.log("loading queue with queue endpoint")
+        setQueueTracks(queue.data || []);
+      } else {
+        console.log("loading with top tracks endpoint")
+         const topTracks = await axios.get(`${API_BASE_URL}/user/topTracks`, {
+          headers: {
+            'Authorization': `Bearer ${await AsyncStorage.getItem('spotifyAccessToken')}`,
+          },
+        });
+
+        const shuffledTracks = shuffleArray(topTracks.data)
+        setQueueTracks(shuffledTracks || [])
+      }
       setError(null);
     } catch (err) {
       console.error("Error fetching queue:", err);
@@ -70,7 +97,7 @@ const QueueScreen = () => {
             onClick={() => playPlayback(item.id)}  // Placeholder action for onClick
           />
         )}
-        keyExtractor={(item) => item.id}  // Use the track's id as the key
+          keyExtractor={(item, index) => `${item.id}-${index}`}
       />
     </View>
   );

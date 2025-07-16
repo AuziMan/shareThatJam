@@ -129,6 +129,3 @@ def post_next_track():
             return jsonify({"error": f"Failed to play next track: {response.status_code}"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-    
-    

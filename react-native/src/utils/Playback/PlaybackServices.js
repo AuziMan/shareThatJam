@@ -186,10 +186,10 @@ export const nextPlayback = async () => {
     if (response.status === 200) {
       console.log('next track requested');
     } else {
-      console.warn('Play request returned:', response.status);
+      console.warn('next track request returned:', response.status);
     }
   } catch (error) {
-    console.log('Error starting playback:', error);
+    console.log('Error next track playback:', error);
   }
 };
 
