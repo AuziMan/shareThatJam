@@ -9,7 +9,7 @@ import { playPlayback } from '../utils/Playback/PlaybackServices';
 
 
 function shuffleArray(array) {
-  const shuffled = [...array]; // Copy the array to avoid mutating original
+  const shuffled = [...array]; 
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap
@@ -86,15 +86,14 @@ const QueueScreen = () => {
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-      {/* <Text style={{ fontSize: 24, textAlign: 'center',  fontWeight: 'bold', marginBottom: 20 }}>Top Tracks</Text> */}
       <FlatList
-        data={queueTracks}  // Using the correctly fetched topTracks array
+        data={queueTracks}  
         renderItem={({ item }) => (
           <TrackCard
-            trackName={item.track}  // Mapping track name
-            artistName={item.artist}  // Mapping artist name
-            albumImg={item.albumImg}  // Mapping album image URL
-            onClick={() => playPlayback(item.id)}  // Placeholder action for onClick
+            trackName={item.track}  
+            artistName={item.artist}  
+            albumImg={item.albumImg}  
+            onClick={() => playPlayback(item.id)}  
           />
         )}
           keyExtractor={(item, index) => `${item.id}-${index}`}
