@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import icons
+import addToQueue from '../Services/queue-service/addToQueue';
 
 
-const TrackCard = ({ trackName, artistName, albumImg, onClick, trackId, onQueue, onAddToPlaylist }) => {
+const TrackCard = ({ trackName, artistName, albumImg, onClick, trackId, onAddToPlaylist }) => {
     return (
         <View style={styles.card}>
             <TouchableOpacity style={styles.cardContent} onPress={onClick}>
@@ -22,7 +23,7 @@ const TrackCard = ({ trackName, artistName, albumImg, onClick, trackId, onQueue,
 
             {/* Buttons for Add & Queue */}
             <View style={styles.actions}>
-                <TouchableOpacity onPress={() => onQueue(trackId)} style={styles.iconButton}>
+                <TouchableOpacity onPress={() => addToQueue(trackId)} style={styles.iconButton}>
                     <Ionicons name="list" size={20} color="white" />
                 </TouchableOpacity>
 

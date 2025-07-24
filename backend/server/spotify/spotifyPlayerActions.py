@@ -129,3 +129,36 @@ def post_next_track():
             return jsonify({"error": f"Failed to play next track: {response.status_code}"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+
+# Add to Queue
+@player_blueprint.route('/addToQueue', methods=['POST'])
+def add_to_queue():
+    try:
+
+        if not session.get('access_token'):
+            return redirect(url_for('auth.login'))
+
+        if datetime.datetime.now().timestamp() > session['expires_at']:
+            return redirect(url_for('auth.refresh_token'))
+        
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+
+        track_id = request.args.get('trackId')
+
+        params = {}
+        if track_id:
+            params['uri'] = f'spotify:track:{track_id}'
+        print(params)
+
+        response = requests.post(f"{SPOTIFY_PLAYER_ENDPOINT}/queue", headers=headers, params=params)
+
+        if response.status_code == 204:
+            return jsonify({'message': 'Next Track Requested'}), 204
+        else:
+            return jsonify({"error": f"Failed to add to queue: {response.status_code}"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

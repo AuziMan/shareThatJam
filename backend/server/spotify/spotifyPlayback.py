@@ -129,6 +129,8 @@ def get_playback_queue():
             return jsonify({"error": f"Failed to get playback queue: {response.status_code}"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
 
 
     
