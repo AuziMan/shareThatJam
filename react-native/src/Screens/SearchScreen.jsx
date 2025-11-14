@@ -3,31 +3,15 @@ import { View, FlatList, Text, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from '../utils/config';
-import TrackCard from '../Components/TrackCard';
+import { SearchBar } from 'react-native-elements';
 
 const SearchScreen = () => {
-  const [topTracks, setTopTracks] = useState([]);
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchTopTracks = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/user/topTracks`, {
-          headers: {
-            'Authorization': `Bearer ${await AsyncStorage.getItem('spotifyAccessToken')}`,
-          },
-        });
-        console.log(response)
-        setTopTracks(response.data || []);
-        setLoading(false);
-      } catch (err) {
-        setError(err);
-        setLoading(false);
-      }
-    };
-
-    fetchTopTracks();
+    setLoading(false);
   }, []);
 
   if (loading) {
@@ -48,18 +32,22 @@ const SearchScreen = () => {
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-      <FlatList
-        data={topTracks}  // Using the correctly fetched topTracks array
-        renderItem={({ item }) => (
-          <TrackCard
-            trackName={item.track}  // Mapping track name
-            artistName={item.artist}  // Mapping artist name
-            albumImg={item.albumImg}  // Mapping album image URL
-            onClick={() => console.log(`Play ${item.track}`)}  // Placeholder action for onClick
-          />
-        )}
-        keyExtractor={(item) => item.id}  // Use the track's id as the key
+      <SearchBar
+        placeholder="Type Here..."
+        onChangeText={setSearch}
+        value={search}
+        lightTheme
+        round
+        containerStyle={{
+          backgroundColor: 'transparent',
+          borderBottomColor: 'transparent',
+          borderTopColor: 'transparent',
+        }}
+        inputContainerStyle={{
+          backgroundColor: '#e0e0e0',
+        }}
       />
+      <Text style={{ marginTop: 20 }}>Search Query: {search}</Text>
     </View>
   );
 };

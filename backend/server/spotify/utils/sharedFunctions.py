@@ -163,7 +163,7 @@ def format_user_recc_seeds():
                 top_tracks = data["items"][:4]  
 
                 track_ids = [track["id"] for track in top_tracks]
-                print(track_ids)
+                # print(track_ids)
 
                 return {"seed_tracks": track_ids}
             else:
