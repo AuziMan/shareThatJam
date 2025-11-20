@@ -25,6 +25,19 @@ def format_response_array(data):
     ]
     return track_info
 
+# Queue formatting
+def format_queue_response(data):
+    queue_info = [
+        {
+            "track": track["name"],
+            "artist": track["artists"][0]["name"] if track["artists"] else "Unknown Artist",
+            "albumImg": track["album"]["images"][0]["url"] if track["album"]["images"] else "unknown image",
+            "id": track["id"]
+        }
+        for track in data.get("queue", [])
+    ]
+    return queue_info
+
 
 def format_track_search(data):
     track_info = [
@@ -63,6 +76,32 @@ def format_playlist_tracks(tracks_data):
     ]
 
     return playlist_info
+
+def get_playback_info(playback_data):
+    device = playback_data.get("device", {})
+    
+    playback_info = {
+        "device_id": device.get("id"),
+        "device_name": device.get("name"),
+        "is_active": device.get("is_active", False),
+        "is_restricted": device.get("is_restricted", False),
+        "is_playing": playback_data.get("is_playing", False),
+        "track": None,
+        "track_id": None,
+        "artist": None,
+        "albumImg": None
+    }
+
+    # Optionally add track info if available
+    item = playback_data.get("item")
+    if item:
+        playback_info["track"] = item.get("name")
+        playback_info["track_id"] = item.get("id")
+        playback_info["artist"] = ", ".join([a["name"] for a in item.get("artists", [])])
+        playback_info["albumImg"] = item.get("album", {}).get("images", [{}])[0].get("url")
+
+    return playback_info
+
 
 # def format_response_array(data):
 #     print(data["items"][:1])
@@ -124,7 +163,7 @@ def format_user_recc_seeds():
                 top_tracks = data["items"][:4]  
 
                 track_ids = [track["id"] for track in top_tracks]
-                print(track_ids)
+                # print(track_ids)
 
                 return {"seed_tracks": track_ids}
             else:
@@ -164,3 +203,21 @@ def search_tracks_by_id(seeds):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+def request_to_curl(method, url, headers=None, params=None, json_body=None):
+    curl = f"curl -X {method.upper()} \\\n  '{url}"
+    if params:
+        query = "&".join(f"{k}={v}" for k, v in params.items())
+        curl += f"?{query}"
+    curl += "' \\\n"
+
+    if headers:
+        for k, v in headers.items():
+            curl += f"  -H '{k}: {v}' \\\n"
+
+    if json_body:
+        curl += f"  -d '{json.dumps(json_body)}'"
+
+    return curl
+    

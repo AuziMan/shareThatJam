@@ -39,22 +39,6 @@ const UserPlaylistTracks = () => {
             }
         };
 
-        const fetchTopTracks = async () => {
-            try {
-                const response = await axios.get(
-                    '/user/topTracks',
-                    {withCredentials: true}
-                );
-
-                setTracks(response.data || []);
-                setLoading(false)
-            } catch (error) {
-                console.log("Unable to fetch top tracks", error)
-                setError(error)
-                setLoading(false)
-            }
-        };
-
     fetchPlaylistTracks();
 }, [playlistId]);
 
