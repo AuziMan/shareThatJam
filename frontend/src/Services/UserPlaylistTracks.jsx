@@ -28,7 +28,7 @@ const UserPlaylistTracks = () => {
 
                 if(!response.data || response.data.length === 0) {
                     console.log("Playlist is empty. Populating with top tracks")
-                    fetchTopTracks();
+                    UserReccomendedTracks();
                 } else {
                     setLoading(false)
                 }
